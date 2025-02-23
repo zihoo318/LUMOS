@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Home_calendar.dart';
+import 'Home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: HomeCalendar(), // Home_calendar.dart를 초기 화면으로 설정
+      home: Home(), // Home.dart를 초기 화면으로 설정
     );
   }
 }
