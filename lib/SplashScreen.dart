@@ -25,9 +25,9 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // 배경 이미지에 60% 투명도 적용
+          // 배경 이미지에 35% 투명도 적용
           Opacity(
-            opacity: 0.6, // 60% 투명도
+            opacity: 0.35, // 35% 투명도
             child: Image.asset(
               'assets/background1.png',
               fit: BoxFit.cover,

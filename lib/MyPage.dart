@@ -39,7 +39,7 @@ class _MyPageState extends State<MyPage> {
           // 배경 이미지
           Positioned.fill(
             child: Opacity(
-              opacity: 0.6, // 투명도 60%
+              opacity: 0.35, // 투명도 35%
               child: Image.asset(
                 'assets/background1.png',
                 fit: BoxFit.cover,
