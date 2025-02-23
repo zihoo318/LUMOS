@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'home.dart'; // Home 화면 import
 import 'SplashScreen.dart'; // SplashScreen (스플래시 화면) import
+import 'home.dart'; // Home 화면 import
+import 'MyPage.dart'; // MyPage 화면 import
 
 void main() {
   runApp(const MyApp());

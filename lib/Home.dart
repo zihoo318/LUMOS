@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'MyPage.dart'; // MyPage 화면 import
 
 class Home extends StatefulWidget {
   @override
@@ -13,7 +14,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeCalendarState extends State<Home> {
-  int _currentIndex = 0; // 현재 선택된 인덱스 (기본값: 코드 추가)
+  int _currentIndex = 1; // 현재 선택된 인덱스 (기본값: 코드 추가)
   bool _isCategoryView = false; // ✅ 날짜별 & 카테고리별 전환 여부
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -78,19 +79,42 @@ class _HomeCalendarState extends State<Home> {
           ),
         ],
       ),
+      // 네비게이션 바
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.6), // 완전 투명하지 않은 흰색 (투명도 60%)
+          color: Colors.white.withOpacity(0.6), // 투명도 60% 적용
         ),
         child: BottomNavigationBar(
-          backgroundColor: Colors.transparent, // 네비게이션 바 자체는 투명
-          selectedItemColor: Color(0xFF020142), // 선택된 아이콘과 글씨 남색
+          backgroundColor: Colors.transparent, // 바탕 자체는 투명
+          selectedItemColor: Color(0xFF020142), // 선택된 아이콘 남색
           unselectedItemColor: Colors.grey, // 비활성 아이콘 회색
-          currentIndex: _currentIndex, // 현재 선택된 아이콘 반영
+          currentIndex: _currentIndex,
           onTap: (index) {
             setState(() {
-              _currentIndex = index; // 선택된 탭 변경
+              _currentIndex = index;
             });
+
+            // 선택한 탭에 맞는 페이지로 이동
+            switch (index) {
+            /*case 0:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddCodePage()),
+                );
+                break;*/
+              case 1:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
+                break;
+              case 2:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyPage()), // 현재 페이지
+                );
+                break;
+            }
           },
           items: [
             BottomNavigationBarItem(
