@@ -4,6 +4,12 @@ import 'package:table_calendar/table_calendar.dart';
 class Home extends StatefulWidget {
   @override
   _HomeCalendarState createState() => _HomeCalendarState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Home")),
+      body: Center(child: Text("홈 화면")),
+    );
+  }
 }
 
 class _HomeCalendarState extends State<Home> {

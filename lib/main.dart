@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'Home.dart';
+import 'home.dart'; // Home 화면 import
+import 'SplashScreen.dart'; // SplashScreen (스플래시 화면) import
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: Home(), // Home.dart를 초기 화면으로 설정
+      home: SplashScreen(), // 스플래시 화면을 먼저 실행
     );
   }
 }

@@ -58,6 +58,8 @@ flutter:
     - assets/background2.png
     - assets/background3.png
     - assets/board.png
+    - assets/background1.png
+    - assets/logo.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
