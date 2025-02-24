@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'codeplus.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -117,46 +119,53 @@ class _FileSelectScreenState extends State<FileSelectScreen> {
       ),
 
       // ✅ 하단 네비게이션 바 (기존 코드 유지)
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.6),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          child: BottomNavigationBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            selectedItemColor: Color(0xFF020142),
-            unselectedItemColor: Colors.grey,
-            currentIndex: _currentIndex,
-            onTap: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.add_circle),
-                label: '코드추가',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: '홈',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: '마이페이지',
-              ),
-            ],
-          ),
-        ),
+      // 네비게이션 바
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.6),
+      ),
+      child: BottomNavigationBar(
+        backgroundColor: Colors.transparent,
+        selectedItemColor: Color(0xFF020142),
+        unselectedItemColor: Colors.grey,
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+
+          // 선택한 탭에 맞는 페이지로 이동
+          switch (index) {
+          case 0:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => CodeInputScreen()),
+                );
+                break;
+            /*case 1:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              );
+              break;
+            case 2:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MyPage()), // 현재 페이지
+              );
+              break;*/
+          }
+        },
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: '코드추가'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이페이지'),
+        ],
       ),
     );
   }

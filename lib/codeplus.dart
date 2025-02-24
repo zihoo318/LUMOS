@@ -108,47 +108,54 @@ class _CodeInputScreenState extends State<CodeInputScreen> {
         ],
       ),
 
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.6), // ✅ 투명한 흰색 적용
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        child: ClipRRect( // ✅ 네비게이션 바의 모서리를 둥글게 잘라 자연스럽게 만듦
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          child: BottomNavigationBar(
-            elevation: 0, // ✅ 그림자 제거 (회색 효과 방지)
-            selectedItemColor: Color(0xFF020142), // 선택된 아이콘과 글씨 남색
-            unselectedItemColor: Colors.grey, // 비활성 아이콘 회색
-            currentIndex: _currentIndex, // 현재 선택된 아이콘 반영
-            onTap: (index) {
-              setState(() {
-                _currentIndex = index; // 선택된 탭 변경
-              });
-            },
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.add_circle),
-                label: '코드추가',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: '홈',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: '마이페이지',
-              ),
-            ],
-          ),
-        ),
-      ),
+      // 네비게이션 바
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
 
+  Widget _buildBottomNavigationBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.6),
+      ),
+      child: BottomNavigationBar(
+        backgroundColor: Colors.transparent,
+        selectedItemColor: Color(0xFF020142),
+        unselectedItemColor: Colors.grey,
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+
+          // 선택한 탭에 맞는 페이지로 이동
+          switch (index) {
+            case 0:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => CodeInputScreen()),
+              );
+              break;
+          /*case 1:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              );
+              break;
+            case 2:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MyPage()), // 현재 페이지
+              );
+              break;*/
+          }
+        },
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: '코드추가'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이페이지'),
+        ],
+      ),
     );
   }
 }
