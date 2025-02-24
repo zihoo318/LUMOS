@@ -1,0 +1,2 @@
+C:/Users/skyfa/AndroidStudioProjects/lumos/android/app/.cxx/Debug/513g3h5j/x86/CMakeFiles/edit_cache.dir
+C:/Users/skyfa/AndroidStudioProjects/lumos/android/app/.cxx/Debug/513g3h5j/x86/CMakeFiles/rebuild_cache.dir
