@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home.dart'; // Home 화면 import
+import 'codeplus.dart';
 
 class MyPage extends StatefulWidget {
   @override
@@ -131,12 +132,12 @@ class _MyPageState extends State<MyPage> {
 
             // 선택한 탭에 맞는 페이지로 이동
             switch (index) {
-              /*case 0:
+              case 0:
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => AddCodePage()),
+                  MaterialPageRoute(builder: (context) => CodeInputScreen()),
                 );
-                break;*/
+                break;
               case 1:
                 Navigator.pushReplacement(
                   context,
