@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'MyPage.dart'; // MyPage 화면 import
+import 'codeplus.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -95,12 +96,12 @@ class _HomeState extends State<Home> {
 
           // 선택한 탭에 맞는 페이지로 이동
           switch (index) {
-          /*case 0:
+          case 0:
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => AddCodePage()),
+                  MaterialPageRoute(builder: (context) => CodeInputScreen()),
                 );
-                break;*/
+                break;
             case 1:
               Navigator.pushReplacement(
                 context,

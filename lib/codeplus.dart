@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'Home.dart';
+import 'MyPage.dart';
 
 void main() {
   runApp(MyApp());
@@ -136,7 +138,7 @@ class _CodeInputScreenState extends State<CodeInputScreen> {
                 MaterialPageRoute(builder: (context) => CodeInputScreen()),
               );
               break;
-          /*case 1:
+          case 1:
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => Home()),
@@ -147,7 +149,7 @@ class _CodeInputScreenState extends State<CodeInputScreen> {
                 context,
                 MaterialPageRoute(builder: (context) => MyPage()), // 현재 페이지
               );
-              break;*/
+              break;
           }
         },
         items: [

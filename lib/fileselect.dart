@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'codeplus.dart';
+import 'Home.dart';
+import 'MyPage.dart';
 
 void main() {
   runApp(MyApp());
@@ -147,7 +148,7 @@ class _FileSelectScreenState extends State<FileSelectScreen> {
                   MaterialPageRoute(builder: (context) => CodeInputScreen()),
                 );
                 break;
-            /*case 1:
+                case 1:
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => Home()),
@@ -158,7 +159,7 @@ class _FileSelectScreenState extends State<FileSelectScreen> {
                 context,
                 MaterialPageRoute(builder: (context) => MyPage()), // 현재 페이지
               );
-              break;*/
+              break;
           }
         },
         items: [
