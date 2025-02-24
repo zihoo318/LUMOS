@@ -25,7 +25,7 @@ class _MyPageState extends State<MyPage> {
         title: Text(
           "마이페이지",
           style: TextStyle(
-            fontSize: 23, // 글씨 크기 증가
+            fontSize: 22, // 글씨 크기 증가
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),

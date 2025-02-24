@@ -172,8 +172,11 @@ class _CalendarViewState extends State<CalendarView> {
             ),
           ),
         ),
-        SizedBox(height: 20),
-        _buildFileList(),
+        Spacer(), // 🔹 달력 아래의 빈 공간을 최대한 활용하여 네비게이션 바 기준 고정
+        Padding(
+          padding: EdgeInsets.only(bottom: 45), // 🔹 네비게이션 바 기준 45px 띄움
+          child: _buildFileList(),
+        ),
       ],
     );
   }
@@ -189,8 +192,7 @@ class _CalendarViewState extends State<CalendarView> {
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.9,
-      height: 300,
-      margin: EdgeInsets.only(top: 30, bottom: 30),
+      height: 330,
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -221,7 +223,7 @@ class _CalendarViewState extends State<CalendarView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: files
                   .map((file) => Padding(
-                padding: EdgeInsets.symmetric(vertical: 5),
+                padding: EdgeInsets.symmetric(vertical: 7), // 파일 이름 사이 간격
                 child: Text(
                   file,
                   style: TextStyle(
@@ -261,11 +263,11 @@ class _CategoryViewState extends State<CategoryView> {
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-    double boxHeight = screenHeight - 170 - kBottomNavigationBarHeight; // ✅ 세로 길이를 실제로 줄임
+    double boxHeight = screenHeight - 180 - kBottomNavigationBarHeight; // ✅ 세로 길이를 실제로 줄임
 
     return Column(
       children: [
-        SizedBox(height: 20), //상단바와 박스 사이 여백
+        SizedBox(height: 35), //상단바와 박스 사이 여백
         SizedBox(
           height: boxHeight,
           child: Center(
