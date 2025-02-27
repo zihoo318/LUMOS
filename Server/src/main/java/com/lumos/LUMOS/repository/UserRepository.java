@@ -1,2 +1,4 @@
-package com.lumos.LUMOS.repository;public class UserRepository {
+package com.lumos.LUMOS.repository;
+
+public class UserRepository {
 }

@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.lumos.LUMOS.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
+public class Categories {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId; // 카테고리 ID (자동 증가)

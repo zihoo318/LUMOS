@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.lumos.LUMOS.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,7 +16,7 @@ public class InCategory {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private Category category; // 카테고리 ID (다대일 관계)
+    private Categories category; // 카테고리 ID (다대일 관계)
 
     @ManyToOne
     @JoinColumn(name = "code_id", nullable = false)

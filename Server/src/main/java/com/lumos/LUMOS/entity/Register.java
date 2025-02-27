@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.lumos.LUMOS.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
