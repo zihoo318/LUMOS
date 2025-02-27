@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'signup.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +17,42 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> login() async {
+    final String email = _emailController.text;
+    final String password = _passwordController.text;
+
+    // 로그인 API 호출
+    final response = await http.post(
+      Uri.parse('http://yourapiurl.com/api/users/login'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'email': email,
+        'password': password,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // 로그인 성공 시, 처리
+      final data = json.decode(response.body);
+      print('로그인 성공: ${data}');
+      // 이후 화면 이동 등의 작업
+    } else {
+      // 로그인 실패 시, 오류 처리
+      print('로그인 실패: ${response.body}');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('아이디 또는 비밀번호가 잘못되었습니다.'),
+      ));
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,7 +146,7 @@ class LoginScreen extends StatelessWidget {
                     child: SizedBox(
                       width: 280, // 버튼 크기 조정
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: login,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           minimumSize: Size(double.infinity, 50),
@@ -128,7 +166,12 @@ class LoginScreen extends StatelessWidget {
                     child: SizedBox(
                       width: 280, // 버튼 크기 조정
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SignUpScreen()),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           minimumSize: Size(double.infinity, 50),
