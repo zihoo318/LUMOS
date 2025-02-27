@@ -13,11 +13,7 @@ import lombok.*;
 public class User {
 
     @Id  // 기본 키 (PK)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // 자동 증가 (AUTO_INCREMENT)
-    private Long id;
-
-    @Column(nullable = false, unique = true)  // Not Null & Unique
-    private String username;
+    private String id;
 
     @Column(nullable = false)
     private String password;
