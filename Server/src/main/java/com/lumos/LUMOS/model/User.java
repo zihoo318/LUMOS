@@ -1,4 +1,4 @@
-package com.lumos.LUMOS.entity;
+package com.lumos.LUMOS.model;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.lumos.LUMOS.entity;
+package com.lumos.LUMOS.model;
 
 public enum Role {
     ROLE_USER,  // 사용자
