@@ -4,5 +4,7 @@ package com.lumos.LUMOS.repository;
 import com.lumos.LUMOS.entity.Code;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+@Repository
 public interface CodeRepository extends JpaRepository<Code, Long> {
+    Optional<Code> findByCode(String code);
 }
