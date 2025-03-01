@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF 뷰어</title>
+  <link rel="stylesheet" href="common/styles.css">
+  <script src="common/script.js" defer></script>
+  <style>
+        /* 📌 사이드바 버튼 스타일 */
+        .pdf-nav button {
+            color: #232072; /* 🔹 텍스트 색상 */
+            font-weight: bold; /* 🔹 볼드체 */
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 5px; /*사이드바 두 옵션 사이 마진*/
+        }
+
+        /* 📌 Content 전체 이동 (오른쪽으로 옮기기) */
+        #pdf-content {
+            margin-left: 180px; /* 🔹 오른쪽으로 이동 */
+            padding: 10px;
+        }
+
+        /* 📌 Content 제목 스타일 */
+        #pdf-title {
+            color: #232072; /* 🔹 제목 색상 */
+            font-weight: bold; /* 🔹 볼드체 */
+            font-size: 18px;
+            text-align: center;
+            margin-top: 35px;
+        }
+
+        /* 📌 PDF 공간 */
+        #pdf-placeholder {
+            width: 70%;
+            height: 400px;
+            margin: 20px auto;
+            background-color: #D9D9D9; /* 🔹 배경 색상 */
+            border: 2px solid #757575; /* 🔹 테두리 색상 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 📌 버튼 스타일 */
+        .pdf-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 400px;
+            margin-top: 20px;
+        }
+
+        .action-button {
+            padding: 10px 50px; /*버튼 세로 가로 길이 조정*/
+            background-color: rgba(125, 150, 243, 0.4); /* 🔹 7D96F3 40% */
+            color: #232072; /* 🔹 텍스트 색상 */
+            font-weight: bold;
+            border: 2px solid #567AF9; /* 🔹 테두리 색상 */
+            border-radius: 50px; /* 🔹 Corner Radius 50 */
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .action-button:hover {
+            background-color: rgba(125, 150, 243, 0.6);
+        }
+    </style>
+</head>
+<body>
+<!-- 📌 PDF 사이드바 자동 로드 -->
+<div id="sidebar-container">
+  <div id="pdf_sidebar">
+    <div class="header">
+      <img src="../images/logo.png" alt="LUMOS Logo">
+    </div>
+    <div class="horizontal-line"></div>
+
+    <ul class="pdf-nav">
+      <li><button onclick="viewPdf('original')">원본 PDF</button></li>
+      <li><button onclick="viewPdf('summary')">요약 PDF</button></li>
+    </ul>
+  </div>
+</div>
+
+<!-- 📌 PDF Content 추가 -->
+<div id="pdf-content">
+  <h2 id="pdf-title">PDF 제목 로딩 중...</h2>
+
+  <!-- 📌 PDF 표시 공간 (PDF가 없어도 공간 유지) -->
+  <div id="pdf-placeholder">
+    <p style="color: #757575; font-size: 18px;">PDF가 없습니다.</p>
+  </div>
+
+  <!-- 📌 버튼 -->
+  <div class="pdf-buttons">
+    <button class="action-button" onclick="copyText()">전체복사</button>
+    <button class="action-button" onclick="downloadPdf()">PDF다운</button>
+  </div>
+</div>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 🔹 사이드바 자동 로드
+            fetch("common/pdf_sidebar.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("pdf-sidebar-container").innerHTML = data;
+
+                    // 🔹 로고 이미지의 src를 강제 변경
+                    let logoImg = document.querySelector("#pdf-sidebar-container .header img");
+                    if (logoImg) {
+                        logoImg.src = "../images/logo.png";
+                    }
+                });
+
+            // 🔹 URL에서 `type`(original/summary)과 `filename` 가져오기
+            let params = new URLSearchParams(window.location.search);
+            let pdfType = params.get("type") || "original";
+            let filename = params.get("filename") || "사용자설정이름"; // 기본값
+
+            console.log("📂 현재 PDF:", pdfType, filename); // 디버깅용 로그
+
+            // 🔹 제목 업데이트
+            let pdfTitle = document.getElementById("pdf-title");
+            pdfTitle.textContent = `${filename} ${pdfType === "original" ? "원본" : "요약본"}`;
+        });
+
+        // 🔹 PDF 다운로드 버튼 (PDF 없어도 동작)
+        function downloadPdf() {
+            alert("PDF 파일이 존재하지 않습니다! (추후 기능 추가)");
+        }
+
+        // 🔹 전체 복사 (추후 기능 추가)
+        function copyText() {
+            alert("PDF 텍스트가 복사되었습니다! (실제 구현 필요)");
+        }
+    </script>
+</body>
+</html>

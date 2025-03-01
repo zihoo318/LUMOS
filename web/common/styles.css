@@ -1,0 +1,384 @@
+/* 📌 전체 페이지 스타일 */
+body {
+    background: url('../images/fixed_background.png') no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* 📌 사이드바 (고정 위치) */
+#sidebar {
+    width: 220px;  /* 일정한 크기로 유지 */
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;  /* 사이드바가 항상 위에 있도록 */
+}
+
+/* 📌 메인 콘텐츠 (사이드바 오른쪽에 배치) */
+#content {
+    margin-left: 230px; /* 사이드바 너비 + 여백 */
+    padding: 60px; /*약간대각선으로 속으로 쓕*/
+    position: relative;
+    z-index: 10; /* 배경보다 위에 위치 */
+}
+
+/* 📌 로고 및 헤더 스타일 */
+.header {
+    width: 10%;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.header img { /* 로고 크기 고정 */
+    max-width: 100px;
+    height: 30px;
+}
+
+/* 📌 가로 줄 */
+.horizontal-line {
+    width: 100%;
+    height: 1.5px;
+    background-color: #D3D3D3;
+    margin: 17px 0;
+}
+
+/* 📌 코드 입력 컨테이너 */
+.code-input-container {
+    display: flex;
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 10px; /* 코드 입력란과 확인 버튼 사이 간격 */
+    margin-top: 10px; /* 코드 입력 라벨과 입력 필드 사이 간격 */
+}
+
+/* 📌 코드 입력 라벨 */
+.code-label {
+    font-size: 17px;
+    font-weight: bold;
+    color: #232072;
+    margin-bottom: 2px; /* 코드 입력 텍스트와 입력란 사이 여백 */
+    margin-left: 10px; /* 🔹 오른쪽으로 이동 */
+}
+
+/* 📌 코드 입력 박스 */
+.code-input {
+    width: 130px; /* 입력 칸 너비 */
+    padding: 8px;
+    border: 2px solid #567AF9;
+    border-radius: 50px; /* Corner Radius 50 적용 */
+    font-size: 14px;
+}
+
+/* 📌 확인 버튼 */
+.confirm-button {
+    padding: 8px 15px;
+    background-color: rgba(139, 162, 246, 0.6);
+    color: #0D0A64;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px; /* Corner Radius 30 적용 */
+    cursor: pointer;
+}
+
+
+/* 📌 파일 리스트 (스크롤 가능하도록 수정) */
+#file-list {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    max-height: unset; /* 🔹 기존 max-height 제거 */
+    overflow-y: auto; /* 🔹 자동으로 확장되도록 */
+    scrollbar-width: thin; /* 🔹 스크롤바 두께 조절 (Firefox) */
+}
+
+.file-list-container {
+    flex-grow: 1; /* 🔹 파일 목록 공간을 자동으로 확장 */
+    min-height: 100px; /* 🔹 최소 높이 설정 */
+    max-height: 400px; /* 🔹 최대 높이 설정 */
+    overflow-y: auto; /* 🔹 스크롤 자동 생성 */
+    margin-top: 20px;
+}
+
+/* 📌 스크롤바 스타일 (Chrome, Edge) */
+#file-list::-webkit-scrollbar {
+    width: 8px; /* 🔹 스크롤바 너비 */
+}
+
+#file-list::-webkit-scrollbar-track {
+    background: rgba(125, 150, 243, 0.2); /* 🔹 연한 배경 */
+    border-radius: 5px;
+}
+
+#file-list::-webkit-scrollbar-thumb {
+    background: rgba(125, 150, 243, 0.6); /* 🔹 스크롤바 색상 */
+    border-radius: 5px;
+}
+
+#file-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(125, 150, 243, 0.8); /* 🔹 호버 시 색상 변경 */
+}
+
+.file-item {
+    font-size: 14px;
+    color: #232072;
+    padding: 5px 0;
+}
+
+/* 📌 수정하기 버튼 (관리자 전용) */
+.edit-button {
+    width: 90%;
+    max-width: 200px;
+    font-size: 16px;
+    padding: 7px; /*버튼 두께*/
+    background-color: rgba(125, 150, 243, 0.4);
+    color: #232072;
+    border: 2px solid #567AF9;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    display: block;
+    margin: 120px auto;
+}
+
+/*Home 화면 css*/
+
+/* 📌 메인 제목 (LUMOS) */
+.main-title {
+    font-size: 70px;
+    font-weight: bold;
+    color: rgba(13, 10, 100, 0.91); /* 0D0A64 91% */
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 5px; /* 🔹 부제목과의 간격 줄이기 */
+}
+
+/* 📌 부제목 (Lecture & User Meeting OCR System) */
+.sub-title {
+    font-size: 40px;
+    font-weight: normal; /* 🔹 Bold 해제 */
+    color: rgba(13, 10, 100, 0.91); /* 0D0A64 91% */
+    text-align: center;
+    margin-top: 5px; /* 🔹 주제목과의 간격 줄이기 */
+    margin-bottom: 5px; /* 🔹 설명과의 간격 줄이기 */
+}
+
+/* 📌 설명 텍스트 (OCR 설명) */
+.description {
+    font-size: 25px;
+    color: #221F71; /* 221F71 */
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+
+/* 📌 버튼 컨테이너 (중앙보다 살짝 오른쪽 배치) */
+.home-button-container {
+    display: flex;
+    justify-content: center; /* 중앙 정렬 */
+    gap: 15px;
+    margin-top: 20px;
+    width: 80%; /* 🔹 중앙 기준으로 약간 좁게 설정 */
+    margin-left: auto;
+    margin-right: 10%; /* 🔹 살짝 오른쪽으로 이동 */
+}
+
+/* 📌 버튼 스타일 (크기 동일하게 설정) */
+.custom-button {
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.6); /* Opacity 60% */
+    color: #221F71; /* 221F71 */
+    font-weight: bold;
+    border: 2px solid #232072; /* 232072 */
+    border-radius: 30px; /* Corner Radius 30 */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 180px; /* 🔹 버튼 크기 조정 */
+    text-align: center;
+    font-size: 15px;
+}
+
+/* 📌 이미지 컨테이너 (중앙 정렬) */
+.home-image-container {
+    display: flex;
+    justify-content: center; /* 중앙 정렬 */
+    align-items: center; /* 이미지 수직 정렬 */
+    gap: 30px; /* 이미지 사이 간격 */
+    margin-top: 30px;
+}
+
+/* 📌 작은 이미지 스타일 (카메라 1, 3) */
+.home-small-img {
+    width: 80px; /* 🔹 작은 크기 */
+    height: auto;
+}
+
+/* 📌 큰 이미지 스타일 (카메라 2) */
+.home-large-img {
+    width: 200px; /* 🔹 큰 크기 */
+    height: auto;
+}
+
+/*Home에서 파일 이름 설정 팝업*/
+
+/* 📌 팝업창 배경 (어두운 배경 효과) */
+.popup-overlay {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* 반투명 검은색 배경 */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+/* 📌 팝업창 컨텐츠 */
+.file_name-popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 60px; /* 🔹 Corner Radius 60 */
+    text-align: center;
+    width: 400px;
+    height: 270px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border: 3px solid #9BAEF6; /* 🔹 9BAEF6 테두리 */
+    position: relative; /* 닫기 버튼 위치 설정 */
+}
+
+/* 📌 팝업 제목 (파일 이름 설정) */
+.file_name-popup-content h2 {
+    color: #232072; /* 🔹 232072 색상 */
+    margin-top: 35px;
+    font-size: 23px;
+    font-weight: bold;
+}
+
+/* 📌 팝업창 내부 입력란 */
+#file-name-input {
+    width: 65%;
+    height: 10%;
+    padding: 10px;
+    border: 2px solid #567AF9; /* 🔹 567AF9 테두리 */
+    border-radius: 50px; /* 🔹 Corner Radius 50 */
+    margin-top: 15px;
+    font-size: 16px;
+    text-align: center;
+}
+
+/* 📌 팝업창 버튼 */
+#save-button {
+    width: 150px;
+    padding: 10px;
+    margin: 30px;
+    background-color: rgba(125, 150, 243, 0.4); /* 🔹 7D96F3 40% */
+    color: #232072;
+    font-size: 16px;
+    font-weight: bold;
+    border: 2px solid #567AF9; /* 🔹 567AF9 테두리 */
+    border-radius: 50px; /* 🔹 Corner Radius 50 */
+    cursor: pointer;
+}
+
+#save-button:hover {
+    background-color: rgba(125, 150, 243, 0.6);
+}
+
+/* 📌 팝업 닫기 버튼 (X 아이콘) */
+.close-popup {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    color: #232072; /* 🔹 X 버튼 색상 */
+    cursor: pointer;
+}
+
+.close-popup:hover {
+    color: #567AF9; /* 🔹 X 버튼 호버 효과 */
+}
+
+/*Home에서 파일 선택 팝업*/
+
+/* 📌 파일 선택 팝업창 배경 */
+.pdf-popup-overlay {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* 반투명 검은색 배경 */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+/* 📌 파일 선택 팝업 컨텐츠 */
+.pdf-popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 60px; /* 🔹 Corner Radius 60 */
+    text-align: center;
+    width: 400px;
+    height: 270px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border: 3px solid #9BAEF6; /* 🔹 9BAEF6 테두리 */
+    position: relative; /* 닫기 버튼 위치 설정 */
+}
+
+/* 📌 파일 선택 팝업 제목 */
+.pdf-popup-content h2 {
+    color: #232072; /* 🔹 232072 색상 */
+    margin-top: 65px;
+    font-size: 23px;
+    font-weight: bold;
+}
+
+/* 📌 원본 PDF & 요약 PDF 버튼 */
+.pdf-option-button {
+    width: 165px;
+    padding: 10px;
+    margin: 10px;
+    margin-top: 20px;
+    background-color: rgba(125, 150, 243, 0.4); /* 🔹 7D96F3 40% */
+    color: #232072;
+    font-size: 16px;
+    font-weight: bold;
+    border: 2px solid #567AF9; /* 🔹 567AF9 테두리 */
+    border-radius: 50px; /* 🔹 Corner Radius 50 */
+    cursor: pointer;
+}
+
+.pdf-option-button:hover {
+    background-color: rgba(125, 150, 243, 0.6);
+}
+
+/* 📌 팝업 닫기 버튼 (X 아이콘) */
+.pdf-close-popup {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    color: #232072; /* 🔹 X 버튼 색상 */
+    cursor: pointer;
+}
+
+.pdf-close-popup:hover {
+    color: #567AF9; /* 🔹 X 버튼 호버 효과 */
+}
