@@ -219,6 +219,42 @@ function downloadPdf() {
     window.open(pdfUrl, "_blank");
 }
 
+function downloadPdf() {
+    document.getElementById("category-popup").style.display = "flex";
+}
+
+function closeCategoryPopup() {
+    document.getElementById("category-popup").style.display = "none";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(() => {
+        let closeButton = document.querySelector("#category-popup .close-btn");
+
+        if (closeButton) {
+            closeButton.style.display = "block";
+            console.log("✅ X 버튼이 정상적으로 존재합니다!");
+        } else {
+            console.error("⚠️ X 버튼을 찾을 수 없습니다! HTML 구조를 확인하세요.");
+        }
+    }, 500);
+
+    let newCategoryButton = document.querySelector(".new-category");
+
+    if (newCategoryButton) {
+        newCategoryButton.addEventListener("click", function () {
+            let categoryName = prompt("새로운 카테고리 이름을 입력하세요:");
+            if (categoryName) {
+                let newButton = document.createElement("button");
+                newButton.className = "category-btn";
+                newButton.textContent = categoryName;
+
+                let categoryList = document.querySelector(".category-list");
+                categoryList.appendChild(newButton); // 새 버튼을 추가
+            }
+        });
+    }
+});
 
 // 📌 PDF 뷰어 페이지 로드 시 PDF 표시
 if (window.location.pathname.includes("pdf_viewer.html")) {

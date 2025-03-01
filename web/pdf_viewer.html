@@ -101,6 +101,137 @@
   </div>
 </div>
 
+<!-- PDF 다운로드 시 카테고리 설정 팝업 -->
+<div id="category-popup" class="popup-overlay" style="display: none;">
+  <div class="popup-box">
+    <!-- ✅ X 버튼이 사라지지 않도록 강제 추가 -->
+    <span class="close-btn" onclick="closeCategoryPopup()">&times;</span>
+
+    <p class="popup-title">
+      <span class="info-icon">&#9432;</span> 어떤 카테고리에 넣을까요?
+    </p>
+    <div class="category-list-container">
+      <div class="category-list">
+        <button class="category-btn">데이터베이스</button>
+        <button class="category-btn">데이터마이닝</button>
+        <button class="category-btn">자료구조</button>
+        <button class="category-btn">알고리즘</button>
+      </div>
+    </div>
+    <span class="new-category">+ 새로운 카테고리</span>
+  </div>
+</div>
+
+<style>
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 113%; /*숫자 클수록 팝업 오른쪽으로 감*/
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .popup-box {
+        position: relative;
+        background: white;
+        padding: 20px;
+        border: 5px solid #9BAEF6;
+        border-radius: 60px;
+        width: 300px;
+        text-align: center;
+    }
+
+    .popup-title {
+        color: #232072;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .info-icon {
+        color: #232072;
+        margin-right: 5px;
+    }
+
+    /* 🔹 카테고리 목록을 감싸는 컨테이너 설정 */
+    .category-list-container {
+        max-height: 200px; /* 최대 높이 설정 */
+        overflow-y: auto; /* 내용이 넘칠 경우 스크롤 생성 */
+        border: 2px solid #9BAEF6;
+        border-radius: 20px;
+        padding: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* 🔹 스크롤바 디자인 */
+    .category-list-container::-webkit-scrollbar {
+        width: 6px; /* 스크롤바 너비 */
+    }
+
+    .category-list-container::-webkit-scrollbar-thumb {
+        background: #567AF9; /* 스크롤바 색상 */
+        border-radius: 10px;
+    }
+
+    .category-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .category-btn {
+        width: 200px;
+        background: rgba(125, 150, 243, 0.4);
+        border: 2px solid #567AF9;
+        border-radius: 40px;
+        color: #232072;
+        font-weight: bold;
+        padding: 10px;
+        margin-left: 37px;
+        cursor: pointer;
+    }
+
+    .category-btn:hover {
+        background: rgba(125, 150, 243, 0.6);
+    }
+
+    .new-category {
+        display: block;
+        color: #232072;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .new-category:hover {
+        text-decoration: underline;
+    }
+
+    .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    font-weight: bold;
+    color: #232072; /* 🔹 X 버튼 색상 */
+    cursor: pointer;
+    display: block;
+    }
+
+    .close-btn:hover {
+    color: #567AF9; /* 🔹 X 버튼 호버 효과 */
+    }
+</style>
+
 <script>
         document.addEventListener("DOMContentLoaded", function () {
             // 🔹 사이드바 자동 로드
