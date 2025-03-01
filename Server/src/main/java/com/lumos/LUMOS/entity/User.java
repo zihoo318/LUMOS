@@ -13,7 +13,7 @@ import lombok.*;
 public class User {
 
     @Id  // 기본 키 (PK)
-    private String id;
+    private String username;
 
     @Column(nullable = false)
     private String password;
