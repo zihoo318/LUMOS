@@ -241,20 +241,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let newCategoryButton = document.querySelector(".new-category");
 
-    if (newCategoryButton) {
-        newCategoryButton.addEventListener("click", function () {
-            let categoryName = prompt("새로운 카테고리 이름을 입력하세요:");
-            if (categoryName) {
-                let newButton = document.createElement("button");
-                newButton.className = "category-btn";
-                newButton.textContent = categoryName;
-
-                let categoryList = document.querySelector(".category-list");
-                categoryList.appendChild(newButton); // 새 버튼을 추가
+        if (newCategoryButton) {
+                newCategoryButton.addEventListener("click", function () {
+                    document.getElementById("new-category-popup").style.display = "flex";
+                    document.getElementById("new-category-popup").style.zIndex = "1001"; // 기존 팝업보다 위로 설정
+                });
             }
-        });
-    }
 });
+
+// ✅ 새로운 카테고리 팝업 닫기 함수 (기존 팝업 유지)
+function closeNewCategoryPopup() {
+    document.getElementById("new-category-popup").style.display = "none";
+}
+
+// ✅ 새로운 카테고리를 기존 팝업에 추가하는 함수
+function saveNewCategory() {
+    let categoryName = document.getElementById("new-category-input").value.trim();
+
+    if (!categoryName) {
+        alert("카테고리 이름을 입력하세요!");
+        return;
+    }
+
+    // 새로운 카테고리 버튼 생성
+    let newButton = document.createElement("button");
+    newButton.className = "category-btn";
+    newButton.textContent = categoryName;
+
+    // 기존 팝업의 카테고리 리스트에 추가
+    let categoryList = document.querySelector("#category-popup .category-list");
+    categoryList.appendChild(newButton);
+
+    // 입력 필드 초기화 및 팝업 닫기 (기존 팝업은 유지)
+    document.getElementById("new-category-input").value = "";
+    closeNewCategoryPopup();
+}
 
 // 📌 PDF 뷰어 페이지 로드 시 PDF 표시
 if (window.location.pathname.includes("pdf_viewer.html")) {
