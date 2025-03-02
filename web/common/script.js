@@ -268,6 +268,11 @@ function saveNewCategory() {
     newButton.className = "category-btn";
     newButton.textContent = categoryName;
 
+    // ✅ 새로운 버튼 클릭 시 파일명 입력 팝업이 열리도록 이벤트 리스너 추가
+        newButton.addEventListener("click", function () {
+            document.getElementById("file-name-popup").style.display = "flex";
+        });
+
     // 기존 팝업의 카테고리 리스트에 추가
     let categoryList = document.querySelector("#category-popup .category-list");
     categoryList.appendChild(newButton);
