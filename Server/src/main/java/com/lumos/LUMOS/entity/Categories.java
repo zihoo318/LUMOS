@@ -12,7 +12,7 @@ import lombok.*;
 public class Categories {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long categoryId; // 카테고리 ID (자동 증가)
+    private int categoryId; // 카테고리 ID (자동 증가)
 
     @ManyToOne
     @JoinColumn(name = "username", nullable = false)

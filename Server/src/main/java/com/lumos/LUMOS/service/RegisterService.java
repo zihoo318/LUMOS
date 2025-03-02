@@ -20,7 +20,7 @@ public class RegisterService {
     private final CodeRepository codeRepository;
 
     // 사용자가 코드를 등록하는 서비스
-    public String registerCode(User user, String code) {
+    public Register registerCode(User user, String code) {
         // 먼저 입력된 code가 이미 Code 테이블에 존재하는지 확인
         Optional<Code> existingCode = codeRepository.findByCode(code);
 
@@ -36,12 +36,13 @@ public class RegisterService {
             register.setRegisterDate(LocalDate.now());  // 등록 날짜 설정
 
             // Register 정보 저장
-            registerRepository.save(register);
+            Register savedRegister = registerRepository.save(register);
 
-            return "Code registered successfully.";
+            // 저장된 Register 객체 반환
+            return savedRegister;
         } else {
             // 코드가 존재하지 않으면 바로 종료
-            return "Code does not exist in the system.";
+            throw new IllegalArgumentException("Code does not exist in the system.");
         }
     }
 

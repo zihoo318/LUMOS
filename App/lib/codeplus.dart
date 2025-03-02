@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Home.dart';
 import 'MyPage.dart';
+import 'api.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,6 +24,36 @@ class CodeInputScreen extends StatefulWidget {
 
 class _CodeInputScreenState extends State<CodeInputScreen> {
   int _currentIndex = 0; // 현재 선택된 인덱스 (기본값: 코드 추가)
+  final TextEditingController _codeController = TextEditingController();  // 코드 입력 필드 컨트롤러
+
+  // API 호출 함수
+  void _registerCode() async {
+    String code = _codeController.text;
+
+    // 입력된 코드가 비어있으면 경고 메시지
+    if (code.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('코드를 입력해 주세요.')),
+      );
+      return;
+    }
+
+    // API 호출
+    var result = await Api.registerCode(code);
+
+    // 결과 처리
+    if (result.containsKey('registerId')) {
+      String registerId = result['registerId'];
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('등록 성공! Register ID: $registerId')),
+      );
+    } else if (result.containsKey('error')) {
+      String error = result['error'];
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('오류 발생: $error')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +106,7 @@ class _CodeInputScreenState extends State<CodeInputScreen> {
                   SizedBox(
                     width: 330,
                     child: TextField(
+                      controller: _codeController, // 컨트롤러 연결
                       textAlign: TextAlign.center,
                       decoration: InputDecoration(
                         filled: true,
@@ -90,7 +122,7 @@ class _CodeInputScreenState extends State<CodeInputScreen> {
 
                   // 확인 버튼
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _registerCode, // API 호출 함수 연결
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFFFE786), // 연한 노랑 계열
                       shape: RoundedRectangleBorder(
