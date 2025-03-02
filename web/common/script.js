@@ -282,6 +282,42 @@ if (window.location.pathname.includes("pdf_viewer.html")) {
     document.addEventListener("DOMContentLoaded", loadPdfViewer);
 }
 
+// 📌 카테고리 선택 시 파일 이름 입력 팝업 열기
+document.querySelectorAll(".category-btn").forEach(button => {
+    button.addEventListener("click", function () {
+        document.getElementById("file-name-popup").style.display = "flex";
+    });
+});
+
+// 📌 파일 이름 팝업 닫기
+function closeFileNamePopup() {
+    document.getElementById("file-name-popup").style.display = "none";
+}
+
+// 📌 파일 이름 저장
+function saveFileName() {
+    let fileName = document.getElementById("file-name-input").value.trim();
+
+    if (!fileName) {
+        alert("파일 이름을 입력하세요!");
+        return;
+    }
+
+    // 🔹 선택한 카테고리 정보를 함께 저장 (sessionStorage 활용)
+    let selectedCategory = sessionStorage.getItem("selectedCategory") || "기본 카테고리";
+
+    // 🔹 리스트에 추가 (예제: 저장된 목록을 업데이트할 수 있도록)
+    let fileList = document.getElementById("file-list");
+    let newItem = document.createElement("li");
+    newItem.textContent = `📁 ${fileName} (${selectedCategory})`;
+
+    fileList.appendChild(newItem);
+
+    // 입력 필드 초기화 및 팝업 닫기
+    document.getElementById("file-name-input").value = "";
+    closeFileNamePopup();
+}
+
 // 📌 관리자 여부 확인 (특정 코드 입력 시 관리자 권한 활성화)
 function checkAdmin() {
     let isAdmin = true; // 실제 구현에서는 로그인 정보 활용

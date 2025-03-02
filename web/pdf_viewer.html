@@ -137,6 +137,21 @@
   </div>
 </div>
 
+<!-- 파일 이름 설정 팝업 -->
+<div id="file-name-popup" class="popup-overlay" style="display: none;">
+  <div class="popup-box">
+    <span class="close-btn" onclick="closeFileNamePopup()">&times;</span>
+
+    <!-- 가로 정렬을 위한 flex 컨테이너 -->
+    <div class="file-name-input-container">
+      <label for="file-name-input">파일명</label>
+      <input type="text" id="file-name-input" placeholder="파일명 입력">
+    </div>
+
+    <button class="file-name-save-button" onclick="saveFileName()">저장</button>
+  </div>
+</div>
+
 <style>
     #category-popup {
         position: fixed;
@@ -346,6 +361,66 @@
     .new-category-close-btn:hover {
     color: #567AF9; /* 🔹 X 버튼 호버 효과 */
     }
+
+    /* 📌 파일 이름 설정 팝업 스타일 */
+#file-name-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 113%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1002; /* 기존 팝업보다 위 */
+}
+
+.file-name-input-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px; /* 라벨과 입력 필드 사이 간격 */
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+
+.file-name-input-container label {
+    font-size: 16px;
+    color: #404040;
+    font-weight: bold;
+    margin-top:11px;
+}
+
+#file-name-input {
+    width: 73%;
+    padding: 10px;
+    border: 2px solid #567AF9;
+    border-radius: 30px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.file-name-save-button {
+    padding: 7px 15px;
+    width: 100px;
+    background-color: rgba(125, 150, 243, 0.4); /* 40% */
+    color: #404040;
+    font-weight: bold;
+    border: 2px solid #567AF9;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    margin-left: 100px;
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+
+.file-name-save-button:hover {
+    background-color: rgba(125, 150, 243, 0.6);
+}
+
 </style>
 
 <script>
