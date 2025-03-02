@@ -5,6 +5,7 @@ import com.lumos.LUMOS.entity.Register;
 import com.lumos.LUMOS.entity.User;
 import com.lumos.LUMOS.repository.RegisterRepository;
 import com.lumos.LUMOS.repository.CodeRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
