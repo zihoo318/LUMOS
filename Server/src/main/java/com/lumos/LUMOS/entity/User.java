@@ -7,9 +7,9 @@ import lombok.*;
 @Table(name = "users")  // DB 테이블 이름 지정
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-@NoArgsConstructor // 기본 생성자 추가
-@AllArgsConstructor // 모든 필드를 포함하는 생성자 추가
 public class User {
 
     @Id

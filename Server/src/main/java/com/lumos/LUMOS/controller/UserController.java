@@ -22,7 +22,6 @@ public class UserController {
         return ResponseEntity.ok(savedUser);
     }
 
-
     // 로그인 API
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody User user) {
