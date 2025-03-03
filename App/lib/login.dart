@@ -23,19 +23,19 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> login() async {
-    final String email = _emailController.text;
+    final String username = _usernameController.text;
     final String password = _passwordController.text;
 
     // 로그인 API 호출
     final response = await http.post(
-      Uri.parse('http://yourapiurl.com/api/users/login'),
+      Uri.parse('http://192.168.219.110:8080/api/users/login'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
-        'email': email,
+        'username': username,
         'password': password,
       }),
     );
@@ -47,9 +47,9 @@ class _LoginScreenState extends State<LoginScreen> {
       // 이후 화면 이동 등의 작업
     } else {
       // 로그인 실패 시, 오류 처리
-      print('로그인 실패: ${response.body}');
+      final errorMessage = response.body; // 오류 메시지 받기
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('아이디 또는 비밀번호가 잘못되었습니다.'),
+        content: Text(errorMessage),
       ));
     }
   }
@@ -103,6 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     width: 360, // 입력 필드 너비 줄이기
                     child: TextField(
+                      controller: _usernameController,
                       decoration: InputDecoration(
                         hintText: "예) abc",
                         border: OutlineInputBorder(),
@@ -129,6 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     width: 360, // 입력 필드 너비 줄이기
                     child: TextField(
+                      controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: "영문, 숫자 조합 8~16자",

@@ -17,7 +17,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
 
   // 백엔드 API 주소
-  final String apiUrl = "http://YOUR_SERVER_IP:8080/api/users/register";
+  final String apiUrl = "http://192.168.219.110:8080/api/users/register";
 
   // 회원가입 요청 함수
   Future<void> signUp() async {
@@ -32,7 +32,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       "username": usernameController.text,
       "password": passwordController.text,
       "email": emailController.text,
-      "role": "ROLE_USER"
     };
 
     try {
@@ -46,19 +45,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("회원가입 성공! 로그인하세요.")),
         );
-        Navigator.pop(context); // 회원가입 후 로그인 화면으로 이동
+        Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("회원가입 실패! 다시 시도하세요.")),
         );
       }
     } catch (e) {
-      print("오류 발생: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("네트워크 오류 발생.")),
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
