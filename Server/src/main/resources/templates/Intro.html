@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intro</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('images/Intro_background.png') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+        }
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .header img { /*로고크기 조정*/
+            width: 50%;
+            height: 50%;
+        }
+        .title {
+            position: absolute;
+            top: 35%;
+            left: 4%; /*title h1~h3 왼쪽에서 여백 조정(숫자작을수록왼쪽)*/
+            text-align: left;
+        }
+        .title h1 {
+            color: rgba(13, 10, 100, 0.91);
+            font-size: 54px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .title h2 {
+            color: rgba(13, 10, 100, 0.91);
+            font-size: 30px;
+            font-weight: normal;
+            margin: 10px 0 0 0;
+        }
+        .title p {
+            color: #A09D1F;
+            font-size: 20px;
+            font-weight: normal;
+            margin: 5px 0 0 0;
+        }
+        .buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+        }
+        .buttons a {
+            text-decoration: none;
+            color: #0D0A64;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 12px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 400;
+            text-align: center;
+            border: 1px solid #1E1E1E;
+            width: 90px;
+            height: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .buttons a:hover {
+            background: lightgray;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <img src="images/logo.png" alt="LUMOS Logo">
+</div>
+<div class="title">
+    <h1>LUMOS</h1>
+    <h2>Lecture & User Meeting OCR System</h2>
+    <p>Transform lecture and meeting contents by optical recognition (OCR)</p>
+</div>
+<div class="buttons">
+    <a href="SignIn.html">sign in</a>
+    <a href="SignUp.html">sign up</a>
+</div>
+</body>
+</html>
