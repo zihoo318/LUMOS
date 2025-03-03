@@ -1,4 +1,4 @@
-package com.lumos.LUMOS.model;
+package com.lumos.LUMOS.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,21 +7,32 @@ import lombok.*;
 @Table(name = "users")  // DB 테이블 이름 지정
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor // 기본 생성자 추가
+@AllArgsConstructor // 모든 필드를 포함하는 생성자 추가
 public class User {
 
-    @Id  // 기본 키 (PK)
-    private String id;
+    @Id
+    private String username; // 사용자가 입력한 ID
 
+    @Getter
     @Column(nullable = false)
-    private String password;
+    private String password; // 비밀번호
 
-    @Column(nullable = false)
-    private String email;
+    @Getter
+    @Column(nullable = false, unique = true)
+    private String email;    // 이메일
+    //private Role role;  //역할
 
-    @Enumerated(EnumType.STRING)  // Enum 타입 저장
-    @Column(nullable = false)
-    private Role role;  // 역할 추가 (ROLE_USER, ROLE_ADMIN 등)
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class Code {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codeId; // 코드 ID (자동 증가)
+    private int codeId; // 코드 ID (자동 증가)
 
     private String code;        // 코드 내용
     private String txtName;      // 코드 텍스트 파일 이름
