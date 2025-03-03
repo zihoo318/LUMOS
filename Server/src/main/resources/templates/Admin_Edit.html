@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>파일 수정 - Admin</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/script.js" defer></script>
+  <style>
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-top: 30px;
+            margin-left: 25px;
+        }
+
+        .search-input {
+            border: 2px solid #567AF9;
+            background-color: #C4CEF6;
+            color: #232072;
+            border-radius: 50px;
+            padding: 8px 40px 8px 35px;
+            outline: none;
+            width: 120px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            width: 16px;
+            height: 16px;
+        }
+
+        .file-table-container {
+            height: 370px;
+            border: 2px solid #D9D9D9;
+            border-radius: 60px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .file-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .file-table th, .file-table td {
+            padding: 10px;
+            color: #232072;
+        }
+
+        .file-table th {
+            font-weight: bold;
+        }
+
+        .edit-btn {
+            background-color: transparent;
+            border: none;
+            color: #232072;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="sidebar-container"></div> <!-- 사이드바 포함 -->
+
+<div id="content" class="edit-file-container">
+  <div class="file-edit-section">
+    <div class="search-container">
+      <img src="/static/images/search-icon.png" alt="Search" class="search-icon">
+      <input type="text" id="search" class="search-input" placeholder="search">
+    </div>
+
+    <div class="file-table-container">
+      <table class="file-table">
+        <thead>
+        <tr>
+          <th>파일 이름</th>
+          <th>파일 유형</th>
+          <th>생성 날짜</th>
+          <th>등록 날짜</th>
+          <th>수정</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>코드 / 사용자설정이름</td>
+          <td>요약본</td>
+          <td>생성날짜</td>
+          <td>등록날짜</td>
+          <td><button class="edit-btn">수정</button></td>
+        </tr>
+        <tr>
+          <td>코드 / 사용자설정이름</td>
+          <td>원본</td>
+          <td>생성날짜</td>
+          <td>등록날짜</td>
+          <td><button class="edit-btn">수정</button></td>
+        </tr>
+        <tr>
+          <td>코드 / 사용자설정이름</td>
+          <td>요약본</td>
+          <td>생성날짜</td>
+          <td>등록날짜</td>
+          <td><button class="edit-btn">수정</button></td>
+        </tr>
+        <tr>
+          <td>코드 / 사용자설정이름</td>
+          <td>원본</td>
+          <td>생성날짜</td>
+          <td>등록날짜</td>
+          <td><button class="edit-btn">수정</button></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

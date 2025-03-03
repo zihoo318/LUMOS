@@ -1,0 +1,46 @@
+<div id="sidebar">
+    <div class="header">
+        <img src="/static/images/logo.png" alt="LUMOS Logo">
+    </div>
+    <div class="horizontal-line"></div>
+
+    <label for="code-input" class="code-label">코드 입력</label>
+    <div class="code-input-container">
+        <input type="text" id="code-input" class="code-input" placeholder="코드를 입력하세요">
+        <button class="confirm-button" onclick="submitCode()">확인</button>
+    </div>
+
+    <div class="file-list-container">
+        <ul id="file-list">
+            <li class="file-item no-files">저장된 파일이 없습니다.</li> <!-- 기본 메시지 -->
+        </ul>
+    </div>
+
+    <button id="edit-button" class="edit-button" style="display: none;">수정하기</button>
+    <!-- <button id="edit-button" class="edit-button;">수정하기</button> -->
+</div>
+
+<!-- 팝업창 (파일 이름 입력) -->
+<div id="file-popup" class="popup-overlay">
+    <div class="file_name-popup-content">
+        <!-- 닫기 버튼 (X 아이콘) -->
+        <button class="close-popup" onclick="closePopup()">✖</button>
+
+        <h2>파일 이름 설정</h2>
+        <input type="text" id="file-name-input" placeholder="파일 이름을 입력하세요">
+        <button id="save-button">저장</button>
+    </div>
+</div>
+
+<!-- PDF 선택 팝업창 -->
+<div id="pdf-popup" class="pdf-popup-overlay">
+    <div class="pdf-popup-content">
+        <!-- 닫기 버튼 (X 아이콘) -->
+        <button class="pdf-close-popup" onclick="closePdfPopup()">✖</button>
+
+        <h2>파일 선택</h2>
+        <!-- 📌 원본 PDF & 요약 PDF 선택 버튼 -->
+        <button class="pdf-option-button" onclick="viewPdf('original')">원본 PDF</button>
+        <button class="pdf-option-button" onclick="viewPdf('summary')">요약 PDF</button>
+    </div>
+</div>
