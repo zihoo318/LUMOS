@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Viga&display=swap');
+
+    body {
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: url('images/background_login.png') no-repeat center center/cover;
+        font-family: 'Viga', sans-serif;
+        position: relative;
+    }
+
+    .logo {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 100px;
+    }
+
+    h1 {
+        color: #0D0A64;
+        font-size: 2.5rem;
+        position: absolute;
+        top: 5%;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    label {
+        color: #0D0A64;
+        font-weight: bold;
+        margin-top: 15px;
+    }
+
+    input {
+        width: 450px;
+        padding: 12px;
+        margin-bottom: 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+        text-align: left;
+    }
+
+    input::placeholder {
+        text-align: left;
+    }
+
+    .signup-btn {
+        background: #ffffff;
+        color: #0D0A64;
+        border: 2px solid #0D0A64;
+        padding: 15px 170px;
+        font-size: 1.2rem;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+        margin-top: 40px;
+        text-align: center;
+        position: relative;
+        left: 30px;
+
+    }
+
+    .signup-btn:hover {
+        background: rgba(255, 255, 255, 0.8);
+        transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+<img src="images/logo.png" alt="Logo" class="logo">
+<h1>Sign up</h1>
+
+<div class="form-container">
+  <label for="username">아이디*</label>
+  <input type="text" id="username" placeholder="예) abc">
+
+  <label for="password">비밀번호*</label>
+  <input type="password" id="password" placeholder="영문, 숫자 조합 8~16자">
+
+  <label for="confirm-password">비밀번호 확인*</label>
+  <input type="password" id="confirm-password" placeholder="비밀번호를 한 번 더 입력해주세요.">
+
+  <label for="name">이름*</label>
+  <input type="text" id="name" placeholder="예) 홍길동">
+
+  <button class="signup-btn">Sign up</button>
+</div>
+</body>
+</html>

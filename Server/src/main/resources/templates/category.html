@@ -1,0 +1,162 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>메인 페이지</title>
+<link rel="stylesheet" href="common/styles.css">
+<script src="common/script.js" defer></script>
+
+<div id="content">
+  <div class="btn-group">
+    <button class="btn" onclick="location.href='date.html'">날짜 별</button>
+    <button class="btn active" onclick="location.href='category.html'">카테고리별</button>
+  </div>
+  <div class="main-container">
+    <div class="category-container">
+      <button class="category-btn" onclick="toggleDropdown('database-list')">데이터베이스 ▼</button>
+      <ul class="dropdown-list" id="database-list">
+        <li>데이터베이스 1주차</li>
+        <li>데이터베이스 2주차</li>
+        <li>데이터베이스 3주차</li>
+        <li>데이터베이스 4주차</li>
+      </ul>
+      <button class="category-btn" onclick="toggleDropdown('algorithm-list')">알고리즘 ▼</button>
+      <ul class="dropdown-list" id="algorithm-list">
+        <li>알고리즘 1주차</li>
+        <li>알고리즘 2주차</li>
+        <li>알고리즘 3주차</li>
+        <li>알고리즘 4주차</li>
+      </ul>
+      <button class="category-btn" onclick="toggleDropdown('data-structure-list')">자료구조 ▼</button>
+      <ul class="dropdown-list" id="data-structure-list">
+        <li>자료구조 1주차</li>
+        <li>자료구조 2주차</li>
+        <li>자료구조 3주차</li>
+        <li>자료구조 4주차</li>
+      </ul>
+      <button class="category-btn" onclick="toggleDropdown('os-list')">운영체제 ▼</button>
+      <ul class="dropdown-list" id="os-list">
+        <li>운영체제 1주차</li>
+        <li>운영체제 2주차</li>
+        <li>운영체제 3주차</li>
+        <li>운영체제 4주차</li>
+      </ul>
+    </div>
+  </div>
+  <div class="image-container">
+    <img src="images/category.png" alt="Category Image">
+    <div class="camera-icon">
+      <img src="images/camera1.png" alt="Camera Icon">
+    </div>
+  </div>
+</div>
+
+<style>
+
+  html, body {
+      overflow-x: hidden; /* 가로 스크롤 제거 */
+      overflow-y: hidden; /* 세로 스크롤 제거 */
+  }
+
+      .category-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 15px;
+      }
+
+
+
+      .btn-group {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-bottom: 20px;
+      }
+      .btn {
+          padding: 6px 50px;
+          border: none;
+          cursor: pointer;
+          background-color: #E0E0E0;
+          font-size: 16px;
+          border-radius: 30px;
+          border: 1px solid #232072;
+          position: relative;
+          right: 130px;
+      }
+      .btn.active {
+          background-color: rgba(195, 208, 255, 0.6);
+      }
+
+      .category-btn {
+          width: 400px;
+          padding: 15px;
+          font-size: 16px;
+          border-radius: 28px;
+          border: 1px solid #232072;
+          background-color: white;
+          text-align: center;
+          cursor: pointer;
+          position: relative;
+          left: -130px;
+      }
+      .category-btn::after {
+          content: "";
+          position: relative;
+          left: -130px;
+          top: 50%;
+          transform: translateY(-50%);
+      }
+      .dropdown-list {
+          display: none;
+          list-style: none;
+          padding: 10px;
+          margin: 0;
+          width: 230px;
+          background: rgba(193, 215, 237, 0.36);
+          border-radius: 28px;
+          position: relative;
+          left: -130px;
+      }
+      .dropdown-list li {
+          padding: 8px;
+          border-bottom: 1px solid #232072;
+          text-align: center;
+      }
+      .dropdown-list li:last-child {
+          border-bottom: none;
+      }
+      .dropdown-list.active {
+          display: block;
+      }
+
+
+      .image-container {
+          position: absolute;
+          transform: scale(1.475); /* 1.5배 확대 */
+          left: 1090px;
+          bottom: -370px;
+          transform: translateY(-50%);
+          position: fixed;
+      }
+      .image-container img {
+          width: 115%;
+          height: auto;
+      }
+      .camera-icon {
+          position: relative;
+          left: -650px;
+          bottom: 100px;
+          transform: scale(1.2); /* 1.5배 확대 */
+          position: fixed;
+      }
+      .camera-icon img {
+          width: 125%;
+          height: auto;
+      }
+
+</style>
+
+<script>
+  function toggleDropdown(id) {
+      document.getElementById(id).classList.toggle("active");
+  }
+</script>
