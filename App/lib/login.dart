@@ -105,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: TextField(
                       controller: _usernameController,
                       decoration: InputDecoration(
-                        hintText: "예) abc",
+                        hintText: "아이디",
                         border: OutlineInputBorder(),
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.8),
@@ -133,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
-                        hintText: "영문, 숫자 조합 8~16자",
+                        hintText: "비밀번호",
                         border: OutlineInputBorder(),
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.8),

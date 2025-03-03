@@ -19,11 +19,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
   // 백엔드 API 주소
   final String apiUrl = "http://192.168.0.193:8080/api/users/register";
 
+  // 비밀번호 검증 함수 (영어 + 숫자 조합, 8~16자)
+  bool validatePassword(String password) {
+    final RegExp passwordRegex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$');
+    return passwordRegex.hasMatch(password);
+  }
+
+  // 이메일 검증 함수 (일반적인 이메일 형식 확인)
+  bool validateEmail(String email) {
+    final RegExp emailRegex =
+    RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    return emailRegex.hasMatch(email);
+  }
+
   // 회원가입 요청 함수
   Future<void> signUp() async {
     if (passwordController.text != confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("비밀번호가 일치하지 않습니다.")),
+      );
+      return;
+    }
+
+    if (!validatePassword(passwordController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("비밀번호는 영문 + 숫자 조합 8~16자로 입력하세요.")),
+      );
+      return;
+    }
+
+    if (!validateEmail(emailController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("올바른 이메일 형식을 입력하세요.")),
       );
       return;
     }
@@ -43,17 +70,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("회원가입 성공! 로그인하세요.")),
+          SnackBar(content: Text("회원가입 성공!")),
         );
         Navigator.pop(context);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("회원가입 실패! 다시 시도하세요.")),
-        );
+        // 응답 본문이 메시지일 경우
+        String message = utf8.decode(response.bodyBytes);  // 서버에서 전달된 오류 메시지
+        print("응답 메시지: $message");  // 응답 메시지 출력
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
       }
-    } catch (e) {
+    } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("네트워크 오류 발생.")),
+        SnackBar(content: Text("네트워크 오류가 발생했습니다. 다시 시도해주세요.")),
       );
     }
   }
@@ -109,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     controller: passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
-                      hintText: "비밀번호 입력",
+                      hintText: "영문 + 숫자 조합 8-16자 이내",
                       border: OutlineInputBorder(),
                     ),
                   ),
