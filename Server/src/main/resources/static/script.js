@@ -3,11 +3,11 @@ document.addEventListener("DOMContentLoaded", function () {
     let isPdfPage = sessionStorage.getItem("isPdfPage");
     let isAdminEditPage = sessionStorage.getItem("isAdminEditPage");
 
-    let sidebarFile = "common/sidebar.html"; // 기본 사이드바
+    let sidebarFile = "/templates/commom/sidebar.html"; // 기본 사이드바
 
     // 🔹 PDF 페이지인 경우 pdf_sidebar.html 사용
     if (isPdfPage === "true") {
-        sidebarFile = "common/pdf_sidebar.html";
+        sidebarFile = "/templates/common/pdf_sidebar.html";
     }
 
     // 🔹 선택된 사이드바를 동적으로 로드
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let logoImg = document.querySelector("#sidebar-container .header img");
             if (logoImg) {
                 console.log("🔹 로고 경로 설정 시도: images/logo.png");
-                logoImg.src = "images/logo.png";
+                logoImg.src = "/static/images/logo.png";
             } else {
                 console.log("⚠️ 로고 이미지 태그를 찾을 수 없음!");
                 }
