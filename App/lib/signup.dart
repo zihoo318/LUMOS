@@ -17,7 +17,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
 
   // 백엔드 API 주소
-  final String apiUrl = "http://192.168.219.110:8080/api/users/register";
+  final String apiUrl = "http://192.168.0.193:8080/api/users/register";
 
   // 회원가입 요청 함수
   Future<void> signUp() async {
