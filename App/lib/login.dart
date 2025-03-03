@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'signup.dart';
-import 'api.dart';
 
 void main() {
   runApp(MyApp());
@@ -24,27 +23,33 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // 로그인 함수 수정
   Future<void> login() async {
-    final String email = _emailController.text;
+    final String username = _usernameController.text;
     final String password = _passwordController.text;
 
-    try {
-      // 로그인 API 호출
-      final data = await Api.login(email, password);  // Api 클래스의 login 메서드 사용
+    // 로그인 API 호출
+    final response = await http.post(
+      Uri.parse('http://192.168.0.193:8080/api/users/login'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'username': username,
+        'password': password,
+      }),
+    );
 
-      // 로그인 성공 시 처리
-      print('로그인 성공: $data');
+    if (response.statusCode == 200) {
+      // 로그인 성공 시, 처리
+      final data = json.decode(response.body);
+      print('로그인 성공: ${data}');
       // 이후 화면 이동 등의 작업
-
-    } catch (e) {
+    } else {
       // 로그인 실패 시, 오류 처리
-      print('로그인 실패: $e');
+      final errorMessage = response.body; // 오류 메시지 받기
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('아이디 또는 비밀번호가 잘못되었습니다.'),
+        content: Text(errorMessage),
       ));
     }
   }
@@ -98,6 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     width: 360, // 입력 필드 너비 줄이기
                     child: TextField(
+                      controller: _usernameController,
                       decoration: InputDecoration(
                         hintText: "예) abc",
                         border: OutlineInputBorder(),
@@ -124,6 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     width: 360, // 입력 필드 너비 줄이기
                     child: TextField(
+                      controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: "영문, 숫자 조합 8~16자",
