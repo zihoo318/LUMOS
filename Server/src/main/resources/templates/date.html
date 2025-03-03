@@ -1,0 +1,235 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>메인 페이지</title>
+<link rel="stylesheet" href="/static/styles.css">
+<script src="/static/script.js" defer></script>
+
+<div id="content">
+  <div class="btn-group">
+    <button class="btn active" onclick="location.href='date.html'">날짜 별</button>
+    <button class="btn" onclick="location.href='category.html'">카테고리별</button>
+  </div>
+  <div class="main-container">
+    <div class="calendar-container">
+      <div class="calendar-header">JANUARY 2024</div>
+      <table class="calendar">
+        <thead>
+        <tr>
+          <th class="sunday">SUN</th><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th>
+        </tr>
+        </thead>
+        <tbody id="calendar-body">
+        </tbody>
+      </table>
+    </div>
+    <div class="file-list-container">
+      <div class="file-list" id="file-list"></div>
+    </div>
+  </div>
+  <div class="image-container">
+    <img src="/static/images/date.png" alt="Data Image">
+  </div>
+  <div class="camera-icon">
+    <img src="/static/images/camera3.png" alt="Camera Icon">
+  </div>
+</div>
+
+<style>
+
+  html, body {
+      overflow-x: hidden; /* 가로 스크롤 제거 */
+      overflow-y: hidden; /* 세로 스크롤 제거 */
+  }
+
+
+      #content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          font-family: Arial, sans-serif;
+          color: #0D0A64;
+      }
+      .btn-group {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-bottom: 20px;
+      }
+      .btn {
+          padding: 6px 50px;
+          border: none;
+          cursor: pointer;
+          background-color: #E0E0E0;
+          font-size: 16px;
+          border-radius: 30px;
+          border: 1px solid #232072;
+          position: relative;
+          right: 130px;
+      }
+      .btn.active {
+          background-color: rgba(195, 208, 255, 0.6);
+      }
+      .main-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 20px;
+          width: 60%;
+          height: 100%;
+          position: relative;
+          left: -130px;
+      }
+
+      .calendar-container {
+          background: white;
+          border-radius: 15px;
+          padding: 20px;
+          box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+          width: 60%;
+          text-align: center;
+          gap: 10px;
+      }
+
+      .file-list-container{
+          background: white;
+          border-radius: 15px;
+          border-color: #BDBDBD;
+          padding: 20px;
+          box-shadow: 0px 4px 6px rgba(1, 1, 1, 0.1);
+          width: 40%;
+          text-align: center;
+          gap: 10px;
+          max-height: 190px;
+          overflow-y: auto;
+
+      }
+
+      .calendar-header {
+          font-size: 14px;
+          text-align: center;
+          margin-bottom: 3px;
+          font-weight: bold;
+      }
+      .calendar {
+          width: 80%;
+
+          border-collapse: collapse;
+      }
+      th {
+          font-family: 'Black';
+          font-size: 20px;
+      }
+      .sunday {
+          color: red;
+          border-radius: 50%;
+          background-color: rgba(255, 0, 0, 0.1);
+
+      }
+
+
+      td.sunday {
+          color: red;
+          border-radius: 50%;
+          background-color: rgba(255, 0, 0, 0.1);
+      }
+
+      th, td {
+          padding: 8px;
+          text-align: center;
+          cursor: pointer;
+      }
+      td.today {
+          border-radius: 50%;
+          border: 2px solid red;
+          color: black;
+          width: 10px;
+          height: 10px;
+
+      }
+      td.selected {
+          font-weight: bold;
+      }
+      .file-list-title {
+          font-size: 20px;
+          font-weight: bold;
+          margin-bottom: 20px;
+      }
+      .file-item {
+          padding: 15px;
+          border-bottom: 2px solid #232072;
+          text-align: center;
+      }
+      .image-container {
+          position: relative;
+          transform: scale(1.475); /* 1.5배 확대 */
+          left: 400px;
+          bottom: 520px;
+      }
+      .image-container img {
+          width: 300px;
+      }
+      .camera-icon {
+          position: relative;
+          left: -450px;
+          bottom: 600px;
+          transform: scale(1.5); /* 1.5배 확대 */
+      }
+      .camera-icon img {
+          width: 60px;
+      }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth();
+      const day = today.getDate();
+
+
+
+
+      function generateCalendar() {
+          const firstDay = new Date(year, month, 1).getDay();
+          const lastDate = new Date(year, month + 1, 0).getDate();
+          let date = 1;
+          let calendarHTML = "";
+
+          for (let i = 0; i < 6; i++) {
+              let row = "<tr>";
+              for (let j = 0; j < 7; j++) {
+                  if (i === 0 && j < firstDay) {
+                      row += "<td></td>";
+                  } else if (date > lastDate) {
+                      break;
+                  } else {
+                      let classes = date === day ? "today" : "";
+                      if (j === 0) classes += " sunday";
+                      row += `<td class="${classes}" onclick="selectDate(${date})">${date}</td>`;
+                      date++;
+                  }
+              }
+              row += "</tr>";
+              calendarHTML += row;
+          }
+          document.getElementById("calendar-body").innerHTML = calendarHTML;
+      }
+
+      function selectDate(selectedDate) {
+          document.querySelectorAll("td").forEach(td => td.classList.remove("selected"));
+          event.target.classList.add("selected");
+          showFiles(selectedDate);
+      }
+
+      function showFiles(date) {
+          const files = {
+              [day]: ["데이터베이스 1주차.pdf", "데이터베이스 2주차.pdf", "알고리즘 1주차.pdf", "운영체제 1주차.pdf"]
+          };
+          let fileList = files[date] || [];
+          document.getElementById("file-list").innerHTML = fileList.map(file => `<div class='file-item'>${file}</div>`).join("\n");
+      }
+
+      generateCalendar();
+      showFiles(day);
+  });
+</script>
