@@ -18,17 +18,31 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;  // 비밀번호 암호화
 
-
-
+    // 사용자 등록 (아이디와 이메일 중복 확인)
     public User registerUser(String username, String password, String email) {
-        //비밀번호 암호화
+        // 아이디 중복 확인
+        if (userRepository.findByUsername(username).isPresent()) {
+            throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+        }
+
+        // 이메일 중복 확인
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        }
+
+        // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(password);
         User user = User.builder()
                 .username(username)
                 .password(encodedPassword)
                 .email(email)
                 .build();
-        return userRepository.save(user); // 저장 후 반환
+
+        // 저장 후 반환되는 사용자 출력
+        User savedUser = userRepository.save(user);
+        System.out.println("저장된 사용자: " + savedUser);  // 반환된 사용자 객체를 출력
+
+        return savedUser; // 저장된 사용자 반환
     }
 
     public User loginUser(User user) {

@@ -5,6 +5,7 @@ import com.lumos.LUMOS.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,10 +18,19 @@ public class UserController {
 
     // 사용자 등록 API
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        User savedUser = userService.registerUser(user.getUsername(), user.getPassword(), user.getEmail());
-        return ResponseEntity.ok(savedUser);
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+        try {
+            User savedUser = userService.registerUser(user.getUsername(), user.getPassword(), user.getEmail());
+            return ResponseEntity.ok(savedUser);
+        } catch (IllegalArgumentException e) {
+            // 예: 이미 사용 중인 아이디일 경우, 메시지만 반환
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            // 서버 오류가 발생한 경우, 메시지만 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
+        }
     }
+
 
     // 로그인 API
     @PostMapping("/login")
