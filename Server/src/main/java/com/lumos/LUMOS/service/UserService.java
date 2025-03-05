@@ -1,5 +1,6 @@
 package com.lumos.LUMOS.service;
 
+import com.lumos.LUMOS.entity.Role;
 import com.lumos.LUMOS.entity.User;
 import com.lumos.LUMOS.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +15,26 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    //평문으로 저장하는 것이 아닌 비밀번호를 암호화해서 저장
+    // 평문으로 저장하는 것이 아닌 비밀번호를 암호화해서 저장
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;  // 비밀번호 암호화
 
     // 사용자 등록 (아이디와 이메일 중복 확인)
-    public User registerUser(String username, String password, String email) {
+    public User registerUser(String username, String password, String email, String role) {
         // 아이디 중복 확인
-        if (userRepository.findByUsername(username).isPresent()) {
+        Optional<User> existingUsername = userRepository.findByUsername(username);
+        if (existingUsername.isPresent()) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
         }
 
         // 이메일 중복 확인
-        if (userRepository.findByEmail(email).isPresent()) {
+        Optional<User> existingEmail = userRepository.findByEmail(email);
+        if (existingEmail.isPresent()) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
+
+        // role을 대문자로 변환 후 Enum으로 변환
+        Role userRole = Role.fromString(role);
 
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(password);
@@ -36,6 +42,7 @@ public class UserService {
                 .username(username)
                 .password(encodedPassword)
                 .email(email)
+                .role(userRole)  // 변환된 Role 사용
                 .build();
 
         // 저장 후 반환되는 사용자 출력
@@ -48,7 +55,6 @@ public class UserService {
     public User loginUser(User user) {
         System.out.println("로그인 시도 아이디: " + user.getUsername()); // username 출력
         System.out.println("로그인 시도 비밀번호: " + user.getPassword()); // username 출력
-
 
         // 아이디 확인 (Optional 처리)
         Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());

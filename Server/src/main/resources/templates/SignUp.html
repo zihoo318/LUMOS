@@ -16,7 +16,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        background: url('images/background_login.png') no-repeat center center/cover;
+        background: url('/static/images/background_login.png') no-repeat center center/cover;
         font-family: 'Viga', sans-serif;
         position: relative;
     }
@@ -89,18 +89,77 @@
 
 <div class="form-container">
   <label for="username">아이디*</label>
-  <input type="text" id="username" placeholder="예) abc">
+  <input type="text" id="username" placeholder="이름을 입력해 주세요">
 
   <label for="password">비밀번호*</label>
   <input type="password" id="password" placeholder="영문, 숫자 조합 8~16자">
 
   <label for="confirm-password">비밀번호 확인*</label>
-  <input type="password" id="confirm-password" placeholder="비밀번호를 한 번 더 입력해주세요.">
+  <input type="password" id="confirm-password" placeholder="비밀번호를 한 번 더 입력해 주세요">
 
-  <label for="name">이름*</label>
-  <input type="text" id="name" placeholder="예) 홍길동">
+  <label for="name">이메일*</label>
+  <input type="text" id="name" placeholder="이메일을 입력해 주세요">
+
+  <!-- 선택한 역할을 저장할 hidden input -->
+  <input type="hidden" id="role" value="">
 
   <button class="signup-btn">Sign up</button>
 </div>
+
+<script>
+  // 페이지 로드 시 URL에서 role 값을 가져와서 hidden input에 설정
+  window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const role = urlParams.get('role'); // URL에서 role 값을 가져옴
+
+    // role 값이 있으면 해당 값을 hidden input에 설정
+    if (role) {
+      document.getElementById("role").value = role;
+    }
+  }
+
+  document.querySelector(".signup-btn").addEventListener("click", function () {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirm-password").value;
+    const email = document.getElementById("name").value;
+    const role = document.getElementById("role").value;
+
+    if (password !== confirmPassword) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    const userData = {
+      username: username,
+      password: password,
+      email: email,
+      role: role || 'USER'  // 기본값을 'USER'로 설정
+    };
+
+    // 요청이 보내지는지 로그로 확인
+    console.log("Sending POST request to the server with data:", userData);
+
+    fetch("http://172.16.28.155:8080/api/users/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData)
+    })
+            .then(response => {
+              console.log('Response Status:', response.status);  // 응답 상태 코드 확인
+              return response.json();
+            })
+            .then(data => {
+              console.log('Response Data:', data);  // 응답 데이터 확인
+              alert("회원가입이 완료되었습니다.");
+              window.location.href = "SignIn.html"; // 로그인 페이지로 이동
+            })
+            .catch(error => {
+              console.error("Error:", error); // 에러가 발생할 경우 에러 메시지 확인
+            });
+  });
+</script>
+</body>
+</html>
 </body>
 </html>

@@ -22,7 +22,10 @@ public class User {
     @Getter
     @Column(nullable = false, unique = true)
     private String email;    // 이메일
-    //private Role role;  //역할
+
+    @Enumerated(EnumType.STRING)  // 대문자로 저장되도록 지정
+    @Column(nullable = false)
+    private Role role;
 
     public void setUsername(String username) {
         this.username = username;
@@ -34,5 +37,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    // role 값을 가져올 때 자동으로 대문자로 변환
+    public String getRole() {
+        return role != null ? role.name().toUpperCase() : null;
+    }
+
+    public void setRole(String role) {
+        this.role = Role.fromString(role);
     }
 }
