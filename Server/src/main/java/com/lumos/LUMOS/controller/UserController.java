@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
@@ -19,14 +18,20 @@ public class UserController {
     // 사용자 등록 API
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
+
+        System.out.println("registerUser 실행!!!!!!!");
         try {
-            User savedUser = userService.registerUser(user.getUsername(), user.getPassword(), user.getEmail());
+            User savedUser = userService.registerUser(user.getUsername(), user.getPassword(), user.getEmail(), String.valueOf(user.getRole()));
+            System.out.println("회원가입 완료: " + user.getUsername() + " role: " + user.getRole());
             return ResponseEntity.ok(savedUser);
         } catch (IllegalArgumentException e) {
             // 예: 이미 사용 중인 아이디일 경우, 메시지만 반환
+            System.out.println("회원가입 실패 - 이미 사용 중인 아이디: " + user.getUsername());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             // 서버 오류가 발생한 경우, 메시지만 반환
+            System.out.println("회원가입 실패 - 서버 오류: " + user.getUsername());
+            e.printStackTrace();    //오류 상세 로그 출력
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
         }
     }
