@@ -37,19 +37,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return emailRegex.hasMatch(email);
   }
 
-  // 비밀번호 검증 함수 (영어 + 숫자 조합, 8~16자)
-  bool validatePassword(String password) {
-    final RegExp passwordRegex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$');
-    return passwordRegex.hasMatch(password);
-  }
-
-  // 이메일 검증 함수 (일반적인 이메일 형식 확인)
-  bool validateEmail(String email) {
-    final RegExp emailRegex =
-    RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-    return emailRegex.hasMatch(email);
-  }
-
   // 회원가입 요청 함수
   Future<void> signUp() async {
     if (passwordController.text != confirmPasswordController.text) {

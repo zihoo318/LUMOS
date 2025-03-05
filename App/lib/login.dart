@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:lumos/signupStart.dart';
 import 'dart:convert';
 import 'signup.dart';
+import 'SharedPreferencesManager.dart';
 
 void main() {
   runApp(MyApp());
@@ -46,6 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final data = json.decode(response.body);
       print('로그인 성공: ${data}');
       // 이후 화면 이동 등의 작업
+      await SharedPreferencesManager.saveUserName(username);
     } else {
       // 로그인 실패 시, 오류 처리
       final errorMessage = response.body; // 오류 메시지 받기
