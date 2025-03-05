@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let isPdfPage = sessionStorage.getItem("isPdfPage");
     let isAdminEditPage = sessionStorage.getItem("isAdminEditPage");
 
-    let sidebarFile = "/templates/commom/sidebar.html"; // 기본 사이드바
+    let sidebarFile = "/templates/common/sidebar.html"; // 기본 사이드바
 
     // 🔹 PDF 페이지인 경우 pdf_sidebar.html 사용
     if (isPdfPage === "true") {
