@@ -18,6 +18,7 @@ public class UserController {
     // 사용자 등록 API
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
+
         System.out.println("registerUser 실행!!!!!!!");
         try {
             User savedUser = userService.registerUser(user.getUsername(), user.getPassword(), user.getEmail(), String.valueOf(user.getRole()));
@@ -34,7 +35,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
         }
     }
-
 
 
     // 로그인 API

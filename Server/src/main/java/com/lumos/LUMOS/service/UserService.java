@@ -36,6 +36,7 @@ public class UserService {
         // role을 대문자로 변환 후 Enum으로 변환
         Role userRole = Role.fromString(role);
 
+
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(password);
         User user = User.builder()
