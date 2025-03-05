@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:lumos/signupStart.dart';
 import 'dart:convert';
 import 'signup.dart';
 
@@ -32,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // 로그인 API 호출
     final response = await http.post(
-      Uri.parse('http://192.168.0.193:8080/api/users/login'),
+      Uri.parse('http://172.16.28.155:8080/api/users/login'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'username': username,
@@ -171,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => SignUpScreen()),
+                            MaterialPageRoute(builder: (context) => SignUpStart()),
                           );
                         },
                         style: ElevatedButton.styleFrom(

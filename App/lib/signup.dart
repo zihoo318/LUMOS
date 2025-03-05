@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert'; // JSON 변환을 위해 필요
+import 'dart:convert';
+
+import 'login.dart'; // JSON 변환을 위해 필요
 
 
 class SignUpScreen extends StatefulWidget {
+  final String role; // 역할을 전달받음
+  SignUpScreen({required this.role});
+
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
@@ -17,7 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
 
   // 백엔드 API 주소
-  final String apiUrl = "http://192.168.0.193:8080/api/users/register";
+  final String apiUrl = "http://172.16.28.155:8080/api/users/register";
 
   // 비밀번호 검증 함수 (영어 + 숫자 조합, 8~16자)
   bool validatePassword(String password) {
@@ -59,6 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       "username": usernameController.text,
       "password": passwordController.text,
       "email": emailController.text,
+      "role": widget.role,
     };
 
     try {
@@ -72,7 +78,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("회원가입 성공!")),
         );
-        Navigator.pop(context);
+        // 회원가입 성공 시 로그인 화면으로 이동
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
       } else {
         // 응답 본문이 메시지일 경우
         String message = utf8.decode(response.bodyBytes);  // 서버에서 전달된 오류 메시지
