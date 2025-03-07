@@ -426,7 +426,7 @@
 <script>
         document.addEventListener("DOMContentLoaded", function () {
             // 🔹 사이드바 자동 로드
-            fetch("common/pdf_sidebar.html")
+            fetch("templates/common/pdf_sidebar.html")
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById("pdf-sidebar-container").innerHTML = data;

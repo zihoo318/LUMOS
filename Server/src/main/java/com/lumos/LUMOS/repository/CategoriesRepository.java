@@ -4,5 +4,5 @@ package com.lumos.LUMOS.repository;
 import com.lumos.LUMOS.entity.Categories;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CategoriesRepository extends JpaRepository<Categories, Long> {
+public interface CategoriesRepository extends JpaRepository<Categories, Integer> {
 }

@@ -6,13 +6,13 @@ import 'SharedPreferencesManager.dart';
 
 class Api {
   // 공통 API URL 설정
-  static const String baseUrl = "http://172.30.1.20:8080/api/users/register";
+  static const String baseUrl = "http://172.30.1.20:8080/api";
 
   // 로그인 API
   static Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/login'),
+        Uri.parse('$baseUrl/users/login'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'email': email,
@@ -43,7 +43,7 @@ class Api {
       }
 
       final response = await http.post(
-        Uri.parse('$baseUrl/api/registerCode'),
+        Uri.parse('$baseUrl/registerCode'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'username': userName,   // SharedPreferences에서 가져온 userName 사용
@@ -84,7 +84,7 @@ class Api {
       }
 
       final response = await http.post(
-        Uri.parse('$baseUrl/api/setCodeName'),
+        Uri.parse('$baseUrl/setCodeName'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'registerId': registerId,  // 등록된 코드의 ID (SharedPreferences에서 불러온 값)
@@ -102,7 +102,34 @@ class Api {
     }
   }
 
+  // 새로운 카테고리 생성 API
+  static Future<Map<String, dynamic>> createCategory(String categoryName) async {
+    try {
+      // SharedPreferences에서 userName을 가져옴
+      String? userName = await SharedPreferencesManager.getUserName();
 
+      if (userName == null) {
+        throw Exception('User name is not found. 로그인을 먼저 해주세요');
+      }
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/category/create'),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: {
+          'username': userName,
+          'categoryName': categoryName,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return {'message': response.body};
+      } else {
+        return {'error': response.body};
+      }
+    } catch (e) {
+      return {'error': 'Error: $e'};
+    }
+  }
 
 
 
