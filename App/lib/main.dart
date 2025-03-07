@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'LUMOS App',
+
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
