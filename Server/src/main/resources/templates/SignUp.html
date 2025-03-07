@@ -140,7 +140,7 @@
     // 요청이 보내지는지 로그로 확인
     console.log("Sending POST request to the server with data:", userData);
 
-    fetch("http://172.16.28.155:8080/api/users/register", {
+    fetch("http://192.168.219.107:8080/api/users/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData)
