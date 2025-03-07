@@ -1,6 +1,6 @@
 /* 📌 전체 페이지 스타일 */
 body {
-    background: url('/static/images/fixed_background.png') no-repeat center center fixed;
+    background: url('../static/images/fixed_background.png') no-repeat center center fixed;
     background-size: cover;
     font-family: Arial, sans-serif;
     margin: 0;
