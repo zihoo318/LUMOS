@@ -20,9 +20,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 return response.text();
             })
-            .then(data => {
-                sidebarContainer.innerHTML = data;
-                console.log("✅ 사이드바 로드 완료");
+             .then(data => {
+                    let sidebarContainer = document.getElementById("sidebar-container");
+                    if (sidebarContainer) {
+                        sidebarContainer.innerHTML = data;
+                        console.log("✅ 사이드바 로드 완료");
 
                 // 로고 이미지 설정
                 let logoImg = document.querySelector("#sidebar-container .header img");
@@ -37,20 +39,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 // ✅ 사이드바 로드 후 버튼 이벤트 리스너 추가
-                        addEventListeners();
+                            addEventListeners();
 
-                        // ✅ "새로운 카테고리 추가" 버튼 클릭 이벤트 리스너 추가
-                        let newCategoryButton = document.querySelector(".new-category");
-                        if (newCategoryButton) {
-                            newCategoryButton.addEventListener("click", function () {
-                                openNewCategoryPopup();
-                            });
-                            console.log("✅ 새로운 카테고리 추가 버튼 이벤트 리스너 정상 등록 완료");
+                            // ✅ "새로운 카테고리 추가" 버튼 클릭 이벤트 리스너 추가
+                            setTimeout(() => {  // 사이드바가 완전히 로드된 후 실행
+                                let newCategoryButton = document.querySelector(".new-category");
+                                if (newCategoryButton) {
+                                    newCategoryButton.addEventListener("click", function () {
+                                        openNewCategoryPopup();
+                                    });
+                                    console.log("✅ 새로운 카테고리 추가 버튼 이벤트 리스너 정상 등록 완료");
+                                } else {
+                                    console.error("❌ 새로운 카테고리 추가 버튼을 찾을 수 없습니다! HTML 구조를 확인하세요.");
+                                }
+                            }, 500); // 0.5초 후 실행
+
                         } else {
-                            console.error("❌ 새로운 카테고리 추가 버튼을 찾을 수 없습니다! HTML 구조를 확인하세요.");
+                            console.error("❌ #sidebar-container 요소를 찾을 수 없습니다. HTML 구조를 확인하세요.");
                         }
                     })
-                    .catch(error => console.error(error.message));
+                    .catch(error => console.error("⚠️ 사이드바 로드 중 오류 발생:", error));
             });
 
 fetch("../templates/common/pdf_sidebar.html")
@@ -389,14 +397,6 @@ function downloadPdf() {
     window.open(pdfUrl, "_blank");
 }
 
-function downloadPdf() {
-    document.getElementById("category-popup").style.display = "flex";
-}
-
-function closeCategoryPopup() {
-    document.getElementById("category-popup").style.display = "none";
-}
-
 document.addEventListener("DOMContentLoaded", function () {
     setTimeout(() => {
         let closeButton = document.querySelector("#category-popup .close-btn");
@@ -422,38 +422,6 @@ document.addEventListener("DOMContentLoaded", function () {
 // ✅ 새로운 카테고리 팝업 닫기 함수 (기존 팝업 유지)
 function closeNewCategoryPopup() {
     document.getElementById("new-category-popup").style.display = "none";
-}
-
-// ✅ 새로운 카테고리를 기존 팝업에 추가하는 함수
-function saveNewCategory() {
-    let categoryName = document.getElementById("new-category-input").value.trim();
-
-    if (!categoryName) {
-        alert("카테고리 이름을 입력하세요!");
-        return;
-    }
-
-    // 새로운 카테고리 버튼 생성
-    let newButton = document.createElement("button");
-    newButton.className = "category-btn";
-    newButton.textContent = categoryName;
-
-    // ✅ 새 카테고리를 선택하면 저장되도록 이벤트 리스너 추가
-        newButton.addEventListener("click", function () {
-            selectCategory(categoryName);
-        });
-
-    // 기존 팝업의 카테고리 리스트에 추가
-        let categoryList = document.querySelector("#category-popup .category-list");
-        if (categoryList) {
-            categoryList.appendChild(newButton);
-        } else {
-            console.error("❌ 카테고리 목록을 찾을 수 없습니다!");
-        }
-
-        // 입력 필드 초기화 및 팝업 닫기 (기존 팝업 유지)
-        document.getElementById("new-category-input").value = "";
-        closeNewCategoryPopup();
 }
 
 // 📌 PDF 뷰어 페이지 로드 시 PDF 표시
