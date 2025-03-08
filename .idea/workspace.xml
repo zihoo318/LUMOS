@@ -6,14 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="d88151c4-e08e-4d93-8d82-35a0e5b12bd3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/App/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/App/android/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/App/android/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/App/android/gradle.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/App/android/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/App/android/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/App/android/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/App/android/settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/App/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/App/pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/src/main/resources/static/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/resources/static/script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/resources/templates/common/pdf_sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/resources/templates/common/pdf_sidebar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/src/main/resources/static/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/resources/static/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/src/main/resources/templates/common/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/resources/templates/common/sidebar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/src/main/resources/templates/pdf_viewer.html" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/resources/templates/pdf_viewer.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +18,23 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
   </component>
   <component name="FileEditorManager">
     <leaf>

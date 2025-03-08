@@ -239,7 +239,7 @@ body {
     background: rgba(0, 0, 0, 0.5); /* 반투명 검은색 배경 */
     justify-content: center;
     align-items: center;
-    z-index: 2000;
+    z-index: 1000;
 }
 
 /* 📌 팝업창 컨텐츠 */
