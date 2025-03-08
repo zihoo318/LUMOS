@@ -36,9 +36,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     checkAdmin();
                 }
 
-                addEventListeners(); // 버튼 이벤트 리스너 추가
-            })
-            .catch(error => console.error(error.message));
+                // ✅ 사이드바 로드 후 버튼 이벤트 리스너 추가
+                        addEventListeners();
+
+                        // ✅ "새로운 카테고리 추가" 버튼 클릭 이벤트 리스너 추가
+                        let newCategoryButton = document.querySelector(".new-category");
+                        if (newCategoryButton) {
+                            newCategoryButton.addEventListener("click", function () {
+                                openNewCategoryPopup();
+                            });
+                            console.log("✅ 새로운 카테고리 추가 버튼 이벤트 리스너 정상 등록 완료");
+                        } else {
+                            console.error("❌ 새로운 카테고리 추가 버튼을 찾을 수 없습니다! HTML 구조를 확인하세요.");
+                        }
+                    })
+                    .catch(error => console.error(error.message));
             });
 
 fetch("../templates/common/pdf_sidebar.html")
@@ -206,11 +218,27 @@ function saveNewCategory() {
         return;
     }
 
-    sessionStorage.setItem("selectedCategory", categoryName);
+    // 새로운 카테고리 버튼 생성
+        let newButton = document.createElement("button");
+        newButton.className = "category-btn";
+        newButton.textContent = categoryName;
 
-    closeNewCategoryPopup();
-    closeCategoryPopup();
-    saveFile();
+        // ✅ 새로운 버튼 클릭 시 카테고리를 저장하고 팝업을 닫도록 이벤트 리스너 추가
+        newButton.addEventListener("click", function () {
+            selectCategory(categoryName);  // 카테고리 저장 함수 호출
+        });
+
+        // 기존 팝업의 카테고리 리스트에 추가
+        let categoryList = document.querySelector("#category-popup .category-list");
+        if (categoryList) {
+            categoryList.appendChild(newButton);
+        } else {
+            console.error("❌ 카테고리 목록을 찾을 수 없습니다!");
+        }
+
+        // 입력 필드 초기화 및 팝업 닫기 (기존 팝업 유지)
+        document.getElementById("new-category-input").value = "";
+        closeNewCategoryPopup();
 }
 
 // 📌 파일 저장 함수 (카테고리 선택 후 실행됨)
@@ -285,6 +313,22 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }, 500);
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(() => {
+        let newCategoryButton = document.querySelector(".new-category");
+
+        if (newCategoryButton) {
+            newCategoryButton.addEventListener("click", function () {
+                openNewCategoryPopup();
+            });
+            console.log("✅ 새로운 카테고리 추가 버튼 이벤트 리스너 정상 등록 완료");
+        } else {
+            console.error("❌ 새로운 카테고리 추가 버튼을 찾을 수 없습니다! HTML 구조를 확인하세요.");
+        }
+    }, 1000);  // 1초 후 실행
+});
+
 
 // 📌 파일 선택 팝업 열기 (원본 PDF / 요약 PDF 선택)
 function openPdfPopup(fileName) {
@@ -394,18 +438,22 @@ function saveNewCategory() {
     newButton.className = "category-btn";
     newButton.textContent = categoryName;
 
-    // ✅ 새로운 버튼 클릭 시 파일명 입력 팝업이 열리도록 이벤트 리스너 추가
+    // ✅ 새 카테고리를 선택하면 저장되도록 이벤트 리스너 추가
         newButton.addEventListener("click", function () {
-            document.getElementById("file-name-popup").style.display = "flex";
+            selectCategory(categoryName);
         });
 
     // 기존 팝업의 카테고리 리스트에 추가
-    let categoryList = document.querySelector("#category-popup .category-list");
-    categoryList.appendChild(newButton);
+        let categoryList = document.querySelector("#category-popup .category-list");
+        if (categoryList) {
+            categoryList.appendChild(newButton);
+        } else {
+            console.error("❌ 카테고리 목록을 찾을 수 없습니다!");
+        }
 
-    // 입력 필드 초기화 및 팝업 닫기 (기존 팝업은 유지)
-    document.getElementById("new-category-input").value = "";
-    closeNewCategoryPopup();
+        // 입력 필드 초기화 및 팝업 닫기 (기존 팝업 유지)
+        document.getElementById("new-category-input").value = "";
+        closeNewCategoryPopup();
 }
 
 // 📌 PDF 뷰어 페이지 로드 시 PDF 표시
