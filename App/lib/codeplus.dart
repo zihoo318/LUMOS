@@ -170,7 +170,7 @@ class _CodeInputScreenState extends State<CodeInputScreen> {
                 MaterialPageRoute(builder: (context) => CodeInputScreen()),
               );
               break;
-          case 1:
+            case 1:
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => Home()),

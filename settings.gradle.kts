@@ -11,4 +11,5 @@ plugins {
 }
 
 rootProject.name = "lumos"
+include ("LUMOS.main")
 include("app")

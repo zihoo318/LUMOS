@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lumos/signupStart.dart';
 import 'SplashScreen.dart'; // SplashScreen (스플래시 화면) import
 import 'home.dart'; // Home 화면 import
 import 'MyPage.dart'; // MyPage 화면 import
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: SplashScreen(), // 스플래시 화면을 먼저 실행
+      home: LoginScreen(), // 스플래시 화면을 먼저 실행
     );
   }
 }

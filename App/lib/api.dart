@@ -1,12 +1,16 @@
 // lib/api.dart
-
+//츄가
 import 'dart:convert';
+//추가
+
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'SharedPreferencesManager.dart';
 
 class Api {
   // 공통 API URL 설정
   static const String baseUrl = "http://192.168.45.165:8080/api";
+
 
   // 로그인 API
   static Future<Map<String, dynamic>> login(String username, String password) async {
@@ -69,20 +73,17 @@ class Api {
   static Future<Map<String, dynamic>> registerCode(String code) async {
     try {
       // SharedPreferences에서 userName을 가져옴
-      String? userName = await SharedPreferencesManager.getUserName();
+      //String? userName = await SharedPreferencesManager.getUserName();
 
-      if (userName == null) {
-        // 만약 userName이 null이면 에러를 반환
-        throw Exception('User name is not found. 로그인을 먼저 해주세요');
-      }
+      // if (userName == null) {
+      //   // 만약 userName이 null이면 에러를 반환
+      //   throw Exception('User name is not found. 로그인을 먼저 해주세요');
+      // }
+      String userName='a1';
 
       final response = await http.post(
-        Uri.parse('$baseUrl/api/registerCode'),
+        Uri.parse('$baseUrl/registerCode?username=$userName&code=$code'),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'username': userName,   // SharedPreferences에서 가져온 userName 사용
-          'code': code,           // 코드
-        }),
       );
 
       if (response.statusCode == 200) {
@@ -106,6 +107,41 @@ class Api {
       return {'error': 'Error: $e'};
     }
   }
+
+
+
+
+
+  // 새로운 카테고리 생성 API
+  static Future<Map<String, dynamic>> createCategory(String categoryName) async {
+    try {
+      // SharedPreferences에서 userName을 가져옴
+      String? userName = await SharedPreferencesManager.getUserName();
+
+      if (userName == null) {
+        throw Exception('User name is not found. 로그인을 먼저 해주세요');
+      }
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/category/create'),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: {
+          'username': userName,
+          'categoryName': categoryName,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return {'message': response.body};
+      } else {
+        return {'error': response.body};
+      }
+    } catch (e) {
+      return {'error': 'Error: $e'};
+    }
+  }
+
+
 
   // 별명 등록 API
   static Future<String> setCodeNameForRegister(String codeName) async {
