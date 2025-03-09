@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'MyPage.dart'; // MyPage 화면 import
+import 'SharedPreferencesManager.dart';
 import 'codeplus.dart';
+import 'api.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -17,6 +19,14 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentIndex = 1; // 현재 선택된 인덱스 (기본값: 홈)
   bool _isCategoryView = false; // ✅ 날짜별 & 카테고리별 전환 여부
+  late Future<Map<String, List<Map<String, String>>>> _categoryCodesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    // API 호출을 위한 Future 설정
+    _categoryCodesFuture = Api().fetchUserCategoryCodes();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +76,32 @@ class _HomeState extends State<Home> {
                     ),
                     Expanded(
                       child: _isCategoryView ? CategoryView() : CalendarView(),
+                    ),
+                    // 카테고리 데이터를 보여주는 부분 추가
+                    FutureBuilder<Map<String, List<Map<String, String>>>>(
+                      future: _categoryCodesFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text("Error: ${snapshot.error}"));
+                        } else if (snapshot.hasData) {
+                          Map<String, List<Map<String, String>>> categoryData = snapshot.data!;
+                          return ListView.builder(
+                            itemCount: categoryData.keys.length,
+                            itemBuilder: (context, index) {
+                              String category = categoryData.keys.elementAt(index);
+                              List<Map<String, String>> codes = categoryData[category]!;
+                              return ListTile(
+                                title: Text(category),
+                                subtitle: Text(codes.join(", ")),
+                              );
+                            },
+                          );
+                        } else {
+                          return Center(child: Text("No data available"));
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -248,18 +284,8 @@ class CategoryView extends StatefulWidget {
 
 class _CategoryViewState extends State<CategoryView> {
   Set<String> _selectedCategories = {}; // ✅ 여러 개의 카테고리를 선택 가능하도록 변경
-  Map<String, List<Map<String, String>>> _categoryFiles = {
-    "데이터베이스": [
-      {"name": "1주차", "image": "assets/ex_file_image1.png"},
-      {"name": "2주차", "image": "assets/ex_file_image2.png"},
-    ],
-    "데이터마이닝": [{"name": "3주차", "image": "assets/ex_file_image1.png"}],
-    "자료구조": [{"name": "4주차", "image": "assets/ex_file_image1.png"},
-      {"name": "5주차", "image": "assets/ex_file_image2.png"},],
-    "알고리즘": [{"name": "7주차", "image": "assets/ex_file_image1.png"}],
-  };
-
-  List<String> _categories = ["데이터베이스", "데이터마이닝", "자료구조", "알고리즘"];
+  Map<String, List<Map<String, String>>> _categoryFiles = { };
+  List<String> _categories = [];
 
   @override
   Widget build(BuildContext context) {
@@ -380,4 +406,5 @@ class _CategoryViewState extends State<CategoryView> {
       ),
     );
   }
+
 }

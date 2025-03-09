@@ -3,18 +3,20 @@ package com.lumos.LUMOS.controller;
 
 import com.lumos.LUMOS.entity.Register;
 import com.lumos.LUMOS.entity.User;
+import com.lumos.LUMOS.repository.CategoriesRepository;
 import com.lumos.LUMOS.repository.RegisterRepository;
 import com.lumos.LUMOS.service.RegisterService;
 import com.lumos.LUMOS.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -26,6 +28,8 @@ public class CodeRegistrationController {
     private UserRepository userRepository;
     @Autowired
     private RegisterRepository registerRepository;
+    @Autowired
+    private CategoriesRepository categoriesRepository;
 
     // 코드 등록
     @PostMapping("/registerCode")
@@ -58,6 +62,29 @@ public class CodeRegistrationController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Register not found.");
         }
+    }
+
+    // 특정 사용자의 모든 카테고리 ID와 이름 조회
+    @GetMapping("/list")
+    public ResponseEntity<?> getCategoriesByUsername(@RequestParam String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("유효하지 않은 사용자입니다.");
+        }
+
+        User user = userOptional.get();
+        List<Map<String, Object>> categories = categoriesRepository.findByUser(user)
+                .stream()
+                .map(category -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("category_id", category.getCategoryId());
+                    map.put("category_name", category.getCategoryName());
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(categories);
     }
 
 }
