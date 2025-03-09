@@ -250,8 +250,8 @@ class _CategoryViewState extends State<CategoryView> {
   Set<String> _selectedCategories = {}; // ✅ 여러 개의 카테고리를 선택 가능하도록 변경
   Map<String, List<Map<String, String>>> _categoryFiles = {
     "데이터베이스": [
-      {"name": "1주차", "image": "assets/ex_file_image1.png"},
-      {"name": "2주차", "image": "assets/ex_file_image2.png"},
+      {"name": "1주차"},
+      {"name": "2주차"},
     ],
     "데이터마이닝": [{"name": "3주차", "image": "assets/ex_file_image1.png"}],
     "자료구조": [{"name": "4주차", "image": "assets/ex_file_image1.png"},

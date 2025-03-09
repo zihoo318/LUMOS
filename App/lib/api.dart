@@ -1,33 +1,71 @@
 // lib/api.dart
-
+//츄가
 import 'dart:convert';
+//추가
+
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'SharedPreferencesManager.dart';
 
 class Api {
   // 공통 API URL 설정
-  static const String baseUrl = "http://172.30.1.20:8080/api/users/register";
+  static const String baseUrl = "http://192.168.219.100:8080/api";
+
 
   // 로그인 API
-  static Future<Map<String, dynamic>> login(String email, String password) async {
+  static Future<Map<String, dynamic>> login(String username, String password) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/login'),
+        Uri.parse('$baseUrl/users/login'), // 로그인 엔드포인트
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
-          'email': email,
+          'username': username,
           'password': password,
         }),
       );
 
       if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        return data;  // 성공 시 반환
+        final data = json.decode(response.body);
+
+        // 로그인 성공 시 SharedPreferences에 저장
+        await SharedPreferencesManager.saveUserName(username);
+
+        return {'success': true, 'data': data}; // 성공 시 응답 데이터 반환
       } else {
-        throw Exception('로그인 실패');
+        return {'success': false, 'error': response.body}; // 실패 시 에러 메시지 반환
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      return {'success': false, 'error': 'Error: $e'}; // 예외 발생 시 처리
+    }
+  }
+
+  // 회원가입 API
+  static Future<Map<String, dynamic>> signUp({
+    required String username,
+    required String password,
+    required String email,
+    required String role,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/users/register'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "username": username,
+          "password": password,
+          "email": email,
+          "role": role,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return {'success': true};
+      } else {
+        String message = utf8.decode(response.bodyBytes);
+        return {'success': false, 'error': message};
+      }
+    } catch (e) {
+      return {'success': false, 'error': '네트워크 오류가 발생했습니다. 다시 시도해주세요.'};
     }
   }
 
@@ -35,20 +73,17 @@ class Api {
   static Future<Map<String, dynamic>> registerCode(String code) async {
     try {
       // SharedPreferences에서 userName을 가져옴
-      String? userName = await SharedPreferencesManager.getUserName();
+      //String? userName = await SharedPreferencesManager.getUserName();
 
-      if (userName == null) {
-        // 만약 userName이 null이면 에러를 반환
-        throw Exception('User name is not found. 로그인을 먼저 해주세요');
-      }
+      // if (userName == null) {
+      //   // 만약 userName이 null이면 에러를 반환
+      //   throw Exception('User name is not found. 로그인을 먼저 해주세요');
+      // }
+      String userName='ga';
 
       final response = await http.post(
-        Uri.parse('$baseUrl/api/registerCode'),
+        Uri.parse('$baseUrl/registerCode?username=$userName&code=$code'),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'username': userName,   // SharedPreferences에서 가져온 userName 사용
-          'code': code,           // 코드
-        }),
       );
 
       if (response.statusCode == 200) {
@@ -72,6 +107,41 @@ class Api {
       return {'error': 'Error: $e'};
     }
   }
+
+
+
+
+
+  // 새로운 카테고리 생성 API
+  static Future<Map<String, dynamic>> createCategory(String categoryName) async {
+    try {
+      // SharedPreferences에서 userName을 가져옴
+      String? userName = await SharedPreferencesManager.getUserName();
+
+      if (userName == null) {
+        throw Exception('User name is not found. 로그인을 먼저 해주세요');
+      }
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/category/create'),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: {
+          'username': userName,
+          'categoryName': categoryName,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return {'message': response.body};
+      } else {
+        return {'error': response.body};
+      }
+    } catch (e) {
+      return {'error': 'Error: $e'};
+    }
+  }
+
+
 
   // 별명 등록 API
   static Future<String> setCodeNameForRegister(String codeName) async {
@@ -102,8 +172,24 @@ class Api {
     }
   }
 
+  // 날짜별 파일 목록 조회 API 추가
+  static Future<List<String>> getFilesByDate(String date, String userName) async {
+    print("API 요청 시작 - getFilesByDate: $date");
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/calendar/files?date=$date&user=$userName'),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-
-
-
+      if (response.statusCode == 200) {
+        List<dynamic> fileList = json.decode(response.body);
+        return List<String>.from(fileList); // 파일 리스트 변환 후 반환
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("파일 불러오기 실패: $e");
+      return [];
+    }
+  }
 }
