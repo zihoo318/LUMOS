@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'MyPage.dart'; // MyPage 화면 import
-import 'SharedPreferencesManager.dart';
 import 'codeplus.dart';
 import 'api.dart';
 

@@ -1,6 +1,6 @@
 // lib/api.dart
-
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'SharedPreferencesManager.dart';
 
@@ -103,6 +103,7 @@ class Api {
       return {'error': 'Error: $e'};
     }
   }
+
 
   // 별명 등록 API
   static Future<String> setCodeNameForRegister(String codeName) async {
@@ -260,5 +261,24 @@ class Api {
   }
 
 
+  // 날짜별 파일 목록 조회 API 추가
+  static Future<List<String>> getFilesByDate(String date, String userName) async {
+    print("API 요청 시작 - getFilesByDate: $date");
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/calendar/files?date=$date&user=$userName'),
+        headers: {'Content-Type': 'application/json'},
+      );
 
+      if (response.statusCode == 200) {
+        List<dynamic> fileList = json.decode(response.body);
+        return List<String>.from(fileList); // 파일 리스트 변환 후 반환
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("파일 불러오기 실패: $e");
+      return [];
+    }
+  }
 }
