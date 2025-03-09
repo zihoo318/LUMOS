@@ -176,7 +176,14 @@ class Api {
     if (response.statusCode == 200) {
       // 서버에서 받은 응답을 파싱하여 카테고리 정보를 리스트로 변환
       List<dynamic> data = json.decode(response.body);
-      List<Map<String, dynamic>> categories = List<Map<String, dynamic>>.from(data);
+
+      // 카테고리 정보를 int로 적절히 변환
+      List<Map<String, dynamic>> categories = data.map((item) {
+        return {
+          'category_id': item['category_id'] is int ? item['category_id'] : int.parse(item['category_id'].toString()), // category_id가 int가 아닐 경우 변환
+          'category_name': item['category_name']
+        };
+      }).toList();
 
       // 카테고리 정보를 SharedPreferences에 저장
       await SharedPreferencesManager.saveCategories(categories);
@@ -216,13 +223,18 @@ class Api {
 
       if (response.statusCode == 200) {
         // 성공 시 응답 본문 반환
-        return {'message': response.body};
+        print("api 성공 시 응답 본문 반환");
+        print(response.body);
+        return {'success': 'success'};
       } else {
         // 실패 시 서버에서 전달한 에러 메시지 반환
+        print("api 실패 시 서버에서 전달한 에러 메시지 반환");
+        print(response.body);
         return {'error': response.body};
       }
     } catch (e) {
       // 예외 발생 시 처리
+      print(e);
       return {'error': 'Error: $e'};
     }
   }

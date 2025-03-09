@@ -78,7 +78,7 @@ public class CodeRegistrationController {
                 .stream()
                 .map(category -> {
                     Map<String, Object> map = new HashMap<>();
-                    map.put("category_id", category.getCategoryId());
+                    map.put("category_id", (Integer) category.getCategoryId()); // Integer로 명시적으로 설정
                     map.put("category_name", category.getCategoryName());
                     return map;
                 })
@@ -86,5 +86,6 @@ public class CodeRegistrationController {
 
         return ResponseEntity.ok(categories);
     }
+
 
 }

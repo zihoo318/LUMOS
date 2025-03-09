@@ -1,0 +1,82 @@
+package com.lumos.LUMOS.service;
+
+import com.lumos.LUMOS.entity.Code;
+import com.lumos.LUMOS.repository.CodeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Optional;
+
+@Service
+public class CodeService {
+
+    @Autowired
+    private CodeRepository codeRepository;
+
+    // 파일의 내용 반환(스트리밍 방식)
+    public String getFileContent(int codeId, String filetype) {
+        Optional<Code> optionalCode = codeRepository.findById(codeId);
+
+        if (optionalCode.isPresent()) {
+            Code code = optionalCode.get();
+            String filePath = getFilePath(code, filetype);
+
+            StringBuilder content = new StringBuilder(); // 파일 내용을 저장할 StringBuilder
+
+            try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
+                String line;
+                // 한 줄씩 파일을 읽어서 StringBuilder에 추가
+                while ((line = br.readLine()) != null) {
+                    content.append(line).append("\n"); // 줄바꿈도 포함
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return content.toString(); // 전체 내용을 String으로 반환
+        }
+
+        return null;
+    }
+
+    // 수정된 파일 내용 덮어쓰기
+    public void updateFileContent(int codeId, String filetype, String content) {
+        // codeId에 해당하는 Code 엔티티를 찾기 위해 코드 리포지토리에서 조회
+        Optional<Code> optionalCode = codeRepository.findById(codeId);
+
+        // Code 엔티티가 존재하는 경우
+        if (optionalCode.isPresent()) {
+            // Code 엔티티를 가져옴
+            Code code = optionalCode.get();
+
+            // 해당 filetype에 맞는 파일 경로를 가져옴
+            String filePath = getFilePath(code, filetype);
+
+            try {
+                // 수정된 content를 해당 경로의 파일에 덮어쓰기
+                // Files.write는 파일에 내용을 쓰는 메소드로, content.getBytes()는 문자열을 바이트 배열로 변환
+                Files.write(Paths.get(filePath), content.getBytes());
+            } catch (IOException e) {
+                // 파일 쓰기 중 예외가 발생하면 예외 메시지를 출력
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // filetype에 맞는 파일 경로 반환
+    private String getFilePath(Code code, String filetype) {
+        String baseDir = "C:/Users/KJH/LUMOS/test_db/";
+        switch (filetype) {
+            case "original":
+                return baseDir + code.getOriginalTxt();
+            case "summary":
+                return baseDir + code.getSummaryTxt();
+            default:
+                throw new IllegalArgumentException("Invalid filetype: " + filetype);
+        }
+    }
+}
