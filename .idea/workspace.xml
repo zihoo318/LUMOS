@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="91fa25df-9dad-4e35-be9d-a5cc8d8394a8" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.kotlin/sessions/kotlin-compiler-11288028555394305259.salive" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/lib/MyPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/app/lib/MyPage.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
