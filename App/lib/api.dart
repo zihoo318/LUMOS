@@ -6,7 +6,7 @@ import 'SharedPreferencesManager.dart';
 
 class Api {
   // 공통 API URL 설정
-  static const String baseUrl = "http://172.30.1.20:8080/api";
+  static const String baseUrl = "http://192.168.45.124:8080/api";
 
   // 로그인 API
   static Future<Map<String, dynamic>> login(String email, String password) async {
@@ -35,20 +35,17 @@ class Api {
   static Future<Map<String, dynamic>> registerCode(String code) async {
     try {
       // SharedPreferences에서 userName을 가져옴
-      String? userName = await SharedPreferencesManager.getUserName();
+      //String? userName = await SharedPreferencesManager.getUserName();
 
-      if (userName == null) {
-        // 만약 userName이 null이면 에러를 반환
-        throw Exception('User name is not found. 로그인을 먼저 해주세요');
-      }
+      // if (userName == null) {
+      //   // 만약 userName이 null이면 에러를 반환
+      //   throw Exception('User name is not found. 로그인을 먼저 해주세요');
+      // }
+      String userName='a';
 
       final response = await http.post(
-        Uri.parse('$baseUrl/registerCode'),
+        Uri.parse('$baseUrl/registerCode?username=$userName&code=$code'),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'username': userName,   // SharedPreferences에서 가져온 userName 사용
-          'code': code,           // 코드
-        }),
       );
 
       if (response.statusCode == 200) {

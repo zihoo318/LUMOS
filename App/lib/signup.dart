@@ -22,7 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
 
   // 백엔드 API 주소
-  final String apiUrl = "http://172.16.28.155:8080/api/users/register";
+  final String apiUrl = "http://192.168.45.89:8080/api/users/register";
 
   // 비밀번호 검증 함수 (영어 + 숫자 조합, 8~16자)
   bool validatePassword(String password) {

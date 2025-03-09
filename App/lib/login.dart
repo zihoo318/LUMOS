@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // 로그인 API 호출
     final response = await http.post(
-      Uri.parse('http://172.16.28.155:8080/api/users/login'),
+      Uri.parse('http://192.168.45.89:8080/api/users/login'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'username': username,
