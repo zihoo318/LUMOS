@@ -6,7 +6,6 @@ import 'MyPage.dart'; // MyPage 화면 import
 import 'package:lumos/pdftransform.dart';
 import 'package:lumos/signup.dart';
 import 'codeplus.dart';
-import 'fileselect.dart';
 import 'login.dart';
 
 
@@ -24,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: LoginScreen(), // 스플래시 화면을 먼저 실행
+      home: PdfTransformScreen(), // 스플래시 화면을 먼저 실행
     );
   }
 }

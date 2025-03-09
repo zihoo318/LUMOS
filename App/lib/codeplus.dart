@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // 클립보드 복사 기능 추가
 import 'Home.dart';
 import 'MyPage.dart';
 import 'api.dart';
@@ -25,6 +26,10 @@ class CodeInputScreen extends StatefulWidget {
 class _CodeInputScreenState extends State<CodeInputScreen> {
   int _currentIndex = 0; // 현재 선택된 인덱스 (기본값: 코드 추가)
   final TextEditingController _codeController = TextEditingController();  // 코드 입력 필드 컨트롤러
+  final TextEditingController _fileNameController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+  List<String> categories = ["데이터분석", "과제자료", "개인파일"];
+  String selectedCategory = "";
 
   // API 호출 함수
   void _registerCode() async {
@@ -53,6 +58,135 @@ class _CodeInputScreenState extends State<CodeInputScreen> {
         SnackBar(content: Text('오류 발생: $error')),
       );
     }
+  }
+
+  // 코드 입력 후 파일명 팝업
+  void _showFileNameDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("파일명 입력", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              SizedBox(height: 10),
+              TextField(
+                controller: _fileNameController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "파일명을 입력하세요",
+                ),
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _showCategoryDialog(); // 파일명 입력 후 카테고리 선택 팝업
+                  },
+                  child: Text("다음"),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // 카테고리 선택 팝업
+  void _showCategoryDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Center(child: Text("어떤 카테고리에 넣을까요?")),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: categories.map((category) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        selectedCategory = category;
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Text(category),
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: 10),
+              Divider(),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _showAddCategoryDialog();
+                },
+                child: Text("+ 새로운 카테고리 추가", style: TextStyle(color: Colors.blue)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // 새로운 카테고리 추가 팝업
+  void _showAddCategoryDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("새로운 카테고리 입력", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              SizedBox(height: 10),
+              TextField(
+                controller: _categoryController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "새로운 카테고리 입력",
+                ),
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_categoryController.text.isNotEmpty) {
+                      setState(() {
+                        categories.add(_categoryController.text);
+                      });
+                      _categoryController.clear();
+                      Navigator.pop(context);
+                      _showCategoryDialog();
+                    }
+                  },
+                  child: Text("저장"),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -146,6 +280,8 @@ class _CodeInputScreenState extends State<CodeInputScreen> {
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
+
+
 
   Widget _buildBottomNavigationBar() {
     return Container(
