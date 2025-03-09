@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: PdfTransformScreen(), // 스플래시 화면을 먼저 실행
+      home: MyPage(), // 스플래시 화면을 먼저 실행
     );
   }
 }

@@ -3,6 +3,8 @@ import 'package:table_calendar/table_calendar.dart';
 import 'MyPage.dart'; // MyPage 화면 import
 import 'codeplus.dart';
 
+import 'pdftransform.dart'; // ✅ PDF 변환 화면 import
+
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -297,7 +299,8 @@ class _CategoryViewState extends State<CategoryView> {
                       child: Column(
                         children: _categories.expand((category) => [
                           _buildCategoryButton(category),
-                          if (_selectedCategories.contains(category)) _buildFileList(category),
+                          if (_selectedCategories.contains(category))
+                            _buildFileList(context, category),
                         ]).toList(),
                       ),
                     ),
@@ -350,7 +353,7 @@ class _CategoryViewState extends State<CategoryView> {
     );
   }
 
-  Widget _buildFileList(String category) {
+  Widget _buildFileList(BuildContext context, String category) {
     List<Map<String, String>> files = _categoryFiles[category] ?? [];
     return Column(
       children: [
@@ -363,21 +366,36 @@ class _CategoryViewState extends State<CategoryView> {
           ),
         ),
         SizedBox(height: 10),
-        ...files.map((file) => _buildFileItem(file)).toList(),
+        ...files.map((file) => _buildFileItem(context, file)).toList(), // ✅ context 추가
       ],
     );
   }
 
-  Widget _buildFileItem(Map<String, String> file) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 40),
-      child: Row(
-        children: [
-          Image.asset(file["image"]!, width: 80, height: 80, fit: BoxFit.cover),
-          SizedBox(width: 10),
-          Text(file["name"]!, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        ],
+
+
+  Widget _buildFileItem(BuildContext context, Map<String, String> file) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PdfTransformScreen(fileName: file["name"]!), // ✅ 클릭한 파일명 전달
+          ),
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 40),
+        child: Row(
+          children: [
+            Text(
+              file["name"]!,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }
+
+
 }
