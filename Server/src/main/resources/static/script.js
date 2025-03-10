@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 });
 
-fetch("common/pdf_sidebar.html")
+fetch("/templates/common/pdf_sidebar.html")
     .then(response => response.text())
     .then(data => {
         document.getElementById("pdf-sidebar-container").innerHTML = data;
@@ -41,20 +41,20 @@ fetch("common/pdf_sidebar.html")
         // ✅ 로고 이미지 경로를 강제 설정
         let logoImg = document.querySelector("#pdf-sidebar-container .header img");
         if (logoImg) {
-            logoImg.src = "/images/logo.png"; // ✅ 절대 경로 사용
-            console.log("✅ 로고 이미지 경로 변경됨:", logoImg.src);
+            logoImg.src = "/static/images/logo.png"; // ✅ 절대 경로 사용
+            console.log("로고 이미지 경로 변경됨:", logoImg.src);
         } else {
-            console.log("⚠️ 로고 이미지 태그를 찾을 수 없음!");
+            console.log("로고 이미지 태그를 찾을 수 없음!");
         }
     })
-    .catch(error => console.error("⚠️ 사이드바 로드 중 오류 발생:", error));
+    .catch(error => console.error("사이드바 로드 중 오류 발생:", error));
 
 
 // 📌 PDF 보기 페이지로 강제 이동하도록 수정
 function viewPdf(type) {
     let selectedFile = sessionStorage.getItem("selectedFile") || "사용자설정이름"; // 기본값 설정
 
-    console.log("📄 PDF 뷰어로 이동 시도:", selectedFile, type); // 확인용 로그
+    console.log("PDF 뷰어로 이동 시도:", selectedFile, type); // 확인용 로그
 
     // PDF 페이지 모드 활성화
     sessionStorage.setItem("isPdfPage", "true");
@@ -62,7 +62,7 @@ function viewPdf(type) {
 
     // **강제 이동 코드 추가!**
     let targetPage = `pdf_viewer.html?type=${type}&filename=${encodeURIComponent(selectedFile)}`;
-    console.log("🌍 이동할 페이지:", targetPage); // 확인 로그
+    console.log("이동할 페이지:", targetPage); // 확인 로그
     window.location.href = targetPage;
 
     // 팝업 닫기

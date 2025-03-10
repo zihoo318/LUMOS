@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'Home.dart';
 import 'api.dart';
 import 'signup.dart';
+import 'SharedPreferencesManager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Flutter 엔진 초기화
@@ -49,6 +50,14 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
         MaterialPageRoute(builder: (context) => Home()),
       );
+
+
+    if (response.statusCode == 200) {
+      // 로그인 성공 시, 처리
+      final data = json.decode(response.body);
+      print('로그인 성공: ${data}');
+      // 이후 화면 이동 등의 작업
+      await SharedPreferencesManager.saveUserName(username);
 
     } else {
       // 로그인 실패 시 Snackbar로 에러 메시지 출력

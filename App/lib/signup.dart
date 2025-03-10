@@ -71,6 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       fcmToken: fcmToken,
     );
 
+
     if (response['success']) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("회원가입 성공!")),
