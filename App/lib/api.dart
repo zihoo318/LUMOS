@@ -6,7 +6,7 @@ import 'SharedPreferencesManager.dart';
 
 class Api {
   // 공통 API URL 설정
-  static const String baseUrl = "http://192.168.45.124:8080/api";
+  static const String baseUrl = "http://192.168.45.112:8080/api";
 
   // 로그인 API
   static Future<Map<String, dynamic>> login(String username, String password) async {
@@ -240,7 +240,7 @@ class Api {
   }
 
   // 카테고리 별 전체 조회
-  Future<Map<String, List<Map<String, String>>>> fetchUserCategoryCodes() async {
+  Future<Map<String, List<Map<int, String>>>> fetchUserCategoryCodes() async {
     // SharedPreferences에서 userName을 가져옴
     String? username = await SharedPreferencesManager.getUserName();
 
@@ -260,10 +260,25 @@ class Api {
         // 요청이 성공하면 JSON 파싱
         final Map<String, dynamic> data = json.decode(response.body);
 
-        // 파싱된 데이터를 Map 형태로 반환
-        return data.map((key, value) {
-          return MapEntry(key, List<Map<String, String>>.from(value.map((e) => Map<String, String>.from(e))));
+        // 파싱된 데이터를 Map 형태로 변환
+        Map<String, List<Map<int, String>>> result = {};
+
+        data.forEach((categoryName, codes) {
+          // categoryName : [{codeId: codeName}, ... , {codeId: codeName}] 형태로 변환
+          List<Map<int, String>> codeMap = [];
+
+          for (var entry in codes) {
+            int codeId = int.parse(entry['codeId'].toString());
+            String codeName = entry['codeName'];  // codeName은 String
+
+            // List에 Map을 추가하는 방식으로 변경
+            codeMap.add({codeId: codeName});  // codeId를 키로, codeName을 값으로 추가
+          }
+
+          result[categoryName] = codeMap;  // 최종 Map에 저장
         });
+
+        return result;
       } else {
         throw Exception('Failed to load data');
       }

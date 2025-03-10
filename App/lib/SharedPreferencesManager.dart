@@ -51,7 +51,7 @@ class SharedPreferencesManager {
     return null;  // 카테고리 이름을 찾을 수 없는 경우 null 반환
   }
 
-  // 저장된 모든 카테고리 이름만 불러오기
+  // 공유변수에 저장된 모든 카테고리 이름만 불러오기
   static Future<List<String>> getAllCategoryNames() async {
     final prefs = await SharedPreferences.getInstance();
     final keys = prefs.getKeys();

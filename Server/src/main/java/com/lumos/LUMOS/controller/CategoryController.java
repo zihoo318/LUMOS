@@ -87,9 +87,9 @@ public class CategoryController {
     // 카테고리 별 전체 조회
     // 사용자의 카테고리별 코드 정보 조회 API
     @GetMapping("/getUserCategoryCodes")
-    public ResponseEntity<Map<String, List<Map<String, String>>>> getUserCategoryCodes(@RequestParam String username) {
+    public ResponseEntity<Map<String, Map<Integer, String>>> getUserCategoryCodes(@RequestParam String username) {
         // getUserCategoryCodes 메소드를 호출하여 해당 사용자의 카테고리별 코드 정보를 가져옵니다.
-        Map<String, List<Map<String, String>>> categoryCodes = categoryService.getUserCategoryCodes(username);
+        Map<String, Map<Integer, String>> categoryCodes = categoryService.getUserCategoryCodes(username);
 
         if (categoryCodes.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);  // 카테고리가 없으면 404 반환

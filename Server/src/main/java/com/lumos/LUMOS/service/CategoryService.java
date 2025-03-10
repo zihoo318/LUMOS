@@ -21,12 +21,12 @@ public class CategoryService {
     private final CategoriesRepository categoriesRepository;
     private final InCategoryRepository inCategoryRepository;
 
-    public Map<String, List<Map<String, String>>> getUserCategoryCodes(String username) {
+    public Map<String, Map<Integer, String>> getUserCategoryCodes(String username) {
         // 해당 사용자의 카테고리 리스트를 가져옵니다.
         List<Categories> categoriesList = categoriesRepository.findByUser_Username(username);
 
         // 결과를 저장할 Map
-        Map<String, List<Map<String, String>>> result = new HashMap<>();
+        Map<String, Map<Integer, String>> result = new HashMap<>();
 
         // 각 카테고리에 대해 코드와 코드 이름을 조회
         for (Categories category : categoriesList) {
@@ -36,22 +36,21 @@ public class CategoryService {
             // 해당 카테고리에 속한 InCategory들 조회
             List<InCategory> inCategoryList = inCategoryRepository.findByCategory_User_Username(username);
 
-            List<Map<String, String>> codeList = new ArrayList<>();
+            Map<Integer, String> codeMap = new HashMap<>();
 
             // 각 InCategory에서 Code 정보를 가져와서 맵핑
             for (InCategory inCategory : inCategoryList) {
                 if (inCategory.getCategory().equals(category)) {
-                    Map<String, String> codeMap = new HashMap<>();
-                    codeMap.put("codeId", String.valueOf(inCategory.getCode().getCodeId()));
-                    codeMap.put("codeName", inCategory.getCodeName());
-                    codeList.add(codeMap);
+                    // 코드 아이디와 이름을 Integer -> String 형식으로 추가
+                    codeMap.put(inCategory.getCode().getCodeId(), inCategory.getCodeName());
                 }
             }
 
-            // 카테고리명을 키로, 해당 카테고리의 코드 정보 리스트를 값으로 저장
-            result.put(categoryName, codeList);
+            // 카테고리명을 키로, 해당 카테고리의 코드 정보를 Map으로 저장
+            result.put(categoryName, codeMap);
         }
 
         return result;
     }
+
 }

@@ -1,28 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // 클립보드 복사 기능 추가
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: PdfTransformScreen(),
-    );
-  }
-}
 
 class PdfTransformScreen extends StatefulWidget {
+  final int codeId; // codeId를 받는 변수
+  final String codeName; // codeName을 받는 변수
+
+  // 생성자에서 codeId와 codeName을 받도록 설정
+  PdfTransformScreen({required this.codeId, required this.codeName});
+
   @override
   _PdfTransformScreenState createState() => _PdfTransformScreenState();
 }
 
 class _PdfTransformScreenState extends State<PdfTransformScreen> {
-  TextEditingController textBoxController = TextEditingController(); // 텍스트 박스 컨트롤러
-  String selectedPdf = "원본 PDF"; // 기본 선택값을 원본 PDF로 설정
+  TextEditingController textBoxController = TextEditingController();
+  String selectedPdf = "원본 PDF";
 
   @override
   Widget build(BuildContext context) {
