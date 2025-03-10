@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:lumos/signupStart.dart';
 import 'SplashScreen.dart'; // SplashScreen (스플래시 화면) import
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import 'MyPage.dart'; // MyPage 화면 import
 import 'package:lumos/pdftransform.dart';
 import 'package:lumos/signup.dart';
 import 'codeplus.dart';
-import 'fileselect.dart';
 import 'login.dart';
 
 
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: SplashScreen(), // 스플래시 화면을 먼저 실행
+      home: Home(), // 스플래시 화면을 먼저 실행
     );
   }
 }

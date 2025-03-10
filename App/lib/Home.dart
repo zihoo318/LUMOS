@@ -4,6 +4,7 @@ import 'MyPage.dart'; // MyPage 화면 import
 import 'SharedPreferencesManager.dart';
 import 'api.dart';
 import 'codeplus.dart';
+import 'pdftransform.dart'; // ✅ PDF 변환 화면 import
 
 void main() {
   runApp(MyApp());
@@ -116,12 +117,12 @@ class _HomeState extends State<Home> {
 
           // 선택한 탭에 맞는 페이지로 이동
           switch (index) {
-          case 0:
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => CodeInputScreen()),
-                );
-                break;
+            case 0:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => CodeInputScreen()),
+              );
+              break;
             case 1:
               Navigator.pushReplacement(
                 context,
@@ -212,23 +213,23 @@ class _CalendarViewState extends State<CalendarView> {
             ),
           ),
         ),
-        Spacer(), // 🔹 달력 아래의 빈 공간을 최대한 활용하여 네비게이션 바 기준 고정
+        Spacer(),
         Padding(
-          padding: EdgeInsets.only(bottom: 45), // 🔹 네비게이션 바 기준 45px 띄움
-          child: _buildFileList(),
+          padding: EdgeInsets.only(bottom: 45),
+          child: _buildFileList(context), // ✅ context를 전달해야 함
         ),
       ],
     );
   }
 
-  Widget _buildFileList() {
+  Widget _buildFileList(BuildContext context) {
     DateTime? matchedDate = _savedFiles.keys.firstWhere(
           (date) => isSameDay(date, _selectedDay),
-      orElse: () => DateTime(0), // 만약 없으면 기본값 반환
+      orElse: () => DateTime(0),
     );
 
     List<String> files = matchedDate.year != 0 ? _savedFiles[matchedDate] ?? [] : [];
-    int fileCount = files.length; // ✅ 파일 개수 계산
+    int fileCount = files.length;
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.9,
@@ -258,27 +259,43 @@ class _CalendarViewState extends State<CalendarView> {
               ),
             ),
           ),
+          SizedBox(height: 10),
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: files
-                  .map((file) => Padding(
-                padding: EdgeInsets.symmetric(vertical: 7), // 파일 이름 사이 간격
-                child: Text(
-                  file,
-                  style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
-              ))
-                  .toList(),
+            child: ListView(
+              children: files.map((file) => _buildFileItem(context, file)).toList(),
             ),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildFileItem(BuildContext context, String fileName) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PdfTransformScreen(fileName: fileName), // ✅ 파일명 전달
+          ),
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 7),
+        child: Text(
+          fileName,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
 }
+
 
 class CategoryView extends StatefulWidget {
   @override
@@ -289,13 +306,13 @@ class _CategoryViewState extends State<CategoryView> {
   Set<String> _selectedCategories = {}; // ✅ 여러 개의 카테고리를 선택 가능하도록 변경
   Map<String, List<Map<String, String>>> _categoryFiles = {
     "데이터베이스": [
-      {"name": "1주차", "image": "assets/ex_file_image1.png"},
-      {"name": "2주차", "image": "assets/ex_file_image2.png"},
+      {"name": "1주차"},
+      {"name": "2주차"},
     ],
-    "데이터마이닝": [{"name": "3주차", "image": "assets/ex_file_image1.png"}],
-    "자료구조": [{"name": "4주차", "image": "assets/ex_file_image1.png"},
-      {"name": "5주차", "image": "assets/ex_file_image2.png"},],
-    "알고리즘": [{"name": "7주차", "image": "assets/ex_file_image1.png"}],
+    "데이터마이닝": [{"name": "3주차"}],
+    "자료구조": [{"name": "4주차"},
+      {"name": "5주차"}],
+    "알고리즘": [{"name": "7주차"}],
   };
 
   List<String> _categories = ["데이터베이스", "데이터마이닝", "자료구조", "알고리즘"];
@@ -336,7 +353,8 @@ class _CategoryViewState extends State<CategoryView> {
                       child: Column(
                         children: _categories.expand((category) => [
                           _buildCategoryButton(category),
-                          if (_selectedCategories.contains(category)) _buildFileList(category),
+                          if (_selectedCategories.contains(category))
+                            _buildFileList(context, category),
                         ]).toList(),
                       ),
                     ),
@@ -389,7 +407,7 @@ class _CategoryViewState extends State<CategoryView> {
     );
   }
 
-  Widget _buildFileList(String category) {
+  Widget _buildFileList(BuildContext context, String category) {
     List<Map<String, String>> files = _categoryFiles[category] ?? [];
     return Column(
       children: [
@@ -402,21 +420,36 @@ class _CategoryViewState extends State<CategoryView> {
           ),
         ),
         SizedBox(height: 10),
-        ...files.map((file) => _buildFileItem(file)).toList(),
+        ...files.map((file) => _buildFileItem(context, file)).toList(), // ✅ context 추가
       ],
     );
   }
 
-  Widget _buildFileItem(Map<String, String> file) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 40),
-      child: Row(
-        children: [
-          Image.asset(file["image"]!, width: 80, height: 80, fit: BoxFit.cover),
-          SizedBox(width: 10),
-          Text(file["name"]!, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        ],
+
+
+  Widget _buildFileItem(BuildContext context, Map<String, String> file) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PdfTransformScreen(fileName: file["name"]!), // ✅ 클릭한 파일명 전달
+          ),
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 40),
+        child: Row(
+          children: [
+            Text(
+              file["name"]!,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }
+
+
 }

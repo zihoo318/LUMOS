@@ -1,6 +1,9 @@
+// PdfTransformScreen에서 선택한 파일명을 활용할 수 있도록 selectedPdf 매개변수를 전달하도록 설정했음
+
 import 'package:flutter/material.dart';
 import 'home.dart'; // Home 화면 import
 import 'codeplus.dart';
+import 'pdftransform.dart'; // PdfTransformScreen 추가
 
 class MyPage extends StatefulWidget {
   @override
@@ -78,10 +81,7 @@ class _MyPageState extends State<MyPage> {
                       ],
                     ),
                   ),
-
                   SizedBox(height: 30),
-
-                  // "계정관리" 제목 (왼쪽에서 15만큼 띄우기)
                   Padding(
                     padding: const EdgeInsets.only(left: 15),
                     child: Text(
@@ -89,11 +89,9 @@ class _MyPageState extends State<MyPage> {
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                   ),
-                  SizedBox(height: 20), // 계정관리 텍스트와 옵션 사이 여백
-
-                  // 계정관리 옵션 위치 조정 (왼쪽 간격 조정)
+                  SizedBox(height: 20),
                   Padding(
-                    padding: const EdgeInsets.only(left: 75), // 왼쪽 간격 조정
+                    padding: const EdgeInsets.only(left: 75),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -114,7 +112,6 @@ class _MyPageState extends State<MyPage> {
           ),
         ],
       ),
-
       // 네비게이션 바
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -171,23 +168,56 @@ class _MyPageState extends State<MyPage> {
     );
   }
 
-  // 최근 기록 위젯 (밑줄 길이 75%로 조정 + 정렬)
   Widget _buildRecentRecord(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start, // 텍스트 왼쪽 정렬
-        children: [
-          Text(title, style: TextStyle(fontSize: 18)), // 글씨 크기 키움
-          SizedBox(height: 3), // 텍스트와 밑줄 사이 간격 조정
-          Align(
-            alignment: Alignment.centerLeft, // 왼쪽 정렬
-            child: SizedBox(
-              width: 270, // 밑줄 고정된 길이로 설정
-              child: Divider(color: Colors.black, thickness: 1),
-            ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PdfTransformScreen(fileName: title), // 수정된 부분
           ),
-        ],
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: TextStyle(fontSize: 18)),
+            SizedBox(height: 3),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                width: 270,
+                child: Divider(color: Colors.black, thickness: 1),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFileItem(BuildContext context, Map<String, String> file) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PdfTransformScreen(fileName: file["name"]!), // ✅ 클릭한 파일명 전달
+          ),
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 40),
+        child: Row(
+          children: [
+            Text(
+              file["name"]!,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }
