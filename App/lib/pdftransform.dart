@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // 클립보드 복사 기능 추가
+import 'package:flutter/services.dart';
+
+import 'api.dart'; // 클립보드 복사 기능 추가
 
 class PdfTransformScreen extends StatefulWidget {
   final String fileName; // ✅ 파일명을 전달받는 변수 추가
@@ -11,8 +13,9 @@ class PdfTransformScreen extends StatefulWidget {
 }
 
 class _PdfTransformScreenState extends State<PdfTransformScreen> {
-  TextEditingController textBoxController = TextEditingController();
-  String selectedPdf = "원본 PDF";
+
+  TextEditingController textBoxController = TextEditingController(); // 텍스트 박스 컨트롤러
+  String selectedPdf = "원본 PDF"; // 기본 선택값을 원본 PDF로 설정
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +124,22 @@ class _PdfTransformScreenState extends State<PdfTransformScreen> {
                     ),
                     SizedBox(width: 35),
                     ElevatedButton(
-                      onPressed: () {},
+
+                      onPressed: () async {
+                        String fileName = selectedPdf == "원본 PDF" ? "test_original.pdf" : "test_summary.pdf";
+
+                        String? filePath = await Api.downloadFile(fileName);
+
+                        if (filePath != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("파일 다운로드 완료: $filePath")),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("파일 다운로드 실패")),
+                          );
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFFFFE786),
                         minimumSize: Size(140, 50),

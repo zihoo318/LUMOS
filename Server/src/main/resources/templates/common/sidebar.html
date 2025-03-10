@@ -294,3 +294,80 @@
     color: #567AF9; /* 🔹 X 버튼 호버 효과 */
     }
 </style>
+
+<!-- config.js 불러오기 -->
+<script src="/static/config.js"></script>
+<script>
+    function submitCode() {
+        const code = document.getElementById("code-input").value;
+        const username = localStorage.getItem("username");
+
+        if (!code) {
+            alert("코드를 입력하세요.");
+            return;
+        }
+
+        fetch(API_BASE_URL + "/api/registerCode", {  // config.js에서 API URL 가져오기
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ username, code })  // POST 요청 데이터
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("등록 실패");
+            }
+            return response.text();  // 서버에서 Register ID 반환
+        })
+        .then(data => {
+            alert("등록 성공: " + data);
+            console.log("Register ID:", data);
+
+            // 파일 이름 설정 팝업 표시 (사용자가 별명을 설정할 수 있도록)
+            openFilePopup(data.split(": ")[1]); // Register ID 전달
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("코드 등록에 실패했습니다.");
+        });
+    }
+
+    function openFilePopup(registerId) {
+        document.getElementById("file-popup").style.display = "block";
+        document.getElementById("save-button").onclick = function() {
+            saveCodeName(registerId);
+        };
+    }
+
+    function saveCodeName(registerId) {
+        const codeName = document.getElementById("file-name-input").value;
+
+        if (!codeName) {
+            alert("파일 이름을 입력하세요.");
+            return;
+        }
+
+        fetch("API_BASE_URL + "/api/setCodeName", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ registerId, codeName })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("별명 설정 실패");
+            }
+            return response.text();
+        })
+        .then(data => {
+            alert("별명 설정 완료: " + data);
+            document.getElementById("file-popup").style.display = "none";
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("별명 설정에 실패했습니다.");
+        });
+    }
+
+    function closePopup() {
+        document.getElementById("file-popup").style.display = "none";
+    }
+</script>

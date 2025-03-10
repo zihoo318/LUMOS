@@ -21,7 +21,7 @@ public class UserController {
 
         System.out.println("registerUser 실행!!!!!!!");
         try {
-            User savedUser = userService.registerUser(user.getUsername(), user.getPassword(), user.getEmail(), String.valueOf(user.getRole()));
+            User savedUser = userService.registerUser(user.getUsername(), user.getPassword(), user.getEmail(), String.valueOf(user.getRole()), user.getFcmToken());
             System.out.println("회원가입 완료: " + user.getUsername() + " role: " + user.getRole());
             return ResponseEntity.ok(savedUser);
         } catch (IllegalArgumentException e) {
@@ -42,8 +42,7 @@ public class UserController {
     public ResponseEntity<?> loginUser(@RequestBody User user) {
         try {
             // 로그인 시, 비밀번호를 BCrypt로 암호화하여 비교
-            User loggedInUser = userService.loginUser(user);
-            return ResponseEntity.ok(loggedInUser); // 로그인 성공 시 유저 정보 반환
+            User loggedInUser = userService.loginUser(user.getUsername(), user.getPassword(), user.getFcmToken());            return ResponseEntity.ok(loggedInUser); // 로그인 성공 시 유저 정보 반환
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 오류 메시지 반환
         }

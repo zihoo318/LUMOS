@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -21,8 +22,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
 
-  // 백엔드 API 주소
-  final String apiUrl = "http://192.168.45.165:8080/api/users/register";
 
   // 비밀번호 검증 함수 (영어 + 숫자 조합, 8~16자)
   bool validatePassword(String password) {
@@ -60,12 +59,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
+    // Firebase FCM 토큰 가져오기
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+    print("FCM Token: $fcmToken");
+
     final response = await Api.signUp(
       username: usernameController.text,
       password: passwordController.text,
       email: emailController.text,
       role: widget.role,
+      fcmToken: fcmToken,
     );
+
 
     if (response['success']) {
       ScaffoldMessenger.of(context).showSnackBar(

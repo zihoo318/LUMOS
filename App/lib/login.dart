@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:lumos/signupStart.dart';
@@ -5,8 +7,11 @@ import 'dart:convert';
 import 'Home.dart';
 import 'api.dart';
 import 'signup.dart';
+import 'SharedPreferencesManager.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Flutter 엔진 초기화
+  await Firebase.initializeApp(); // Firebase 초기화
   runApp(MyApp());
 }
 
@@ -33,17 +38,26 @@ class _LoginScreenState extends State<LoginScreen> {
     final String username = _usernameController.text;
     final String password = _passwordController.text;
 
-    // API 호출하여 로그인 요청
-    final response = await Api.login(username, password);
+    // FCM 토큰 가져오기
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+
+    final response = await Api.login(username, password, fcmToken ?? "");
 
     if (response['success']) {
       print('로그인 성공: ${response['data']}');
 
-      // 로그인 성공 후 홈 화면 이동 (예: `HomeScreen()`으로 이동)
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Home()),
       );
+
+
+    if (response.statusCode == 200) {
+      // 로그인 성공 시, 처리
+      final data = json.decode(response.body);
+      print('로그인 성공: ${data}');
+      // 이후 화면 이동 등의 작업
+      await SharedPreferencesManager.saveUserName(username);
 
     } else {
       // 로그인 실패 시 Snackbar로 에러 메시지 출력

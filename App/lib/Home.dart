@@ -1,9 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'MyPage.dart'; // MyPage 화면 import
+import 'SharedPreferencesManager.dart';
+import 'api.dart';
 import 'codeplus.dart';
-
 import 'pdftransform.dart'; // ✅ PDF 변환 화면 import
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Calendar App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: Home(), // Home 위젯 실행
+    );
+  }
+}
 
 class Home extends StatefulWidget {
   @override
@@ -136,10 +155,27 @@ class CalendarView extends StatefulWidget {
 class _CalendarViewState extends State<CalendarView> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  Map<DateTime, List<String>> _savedFiles = {
-    DateTime(2025, 2, 20): ['파일 1', '파일 2'],
-    DateTime(2025, 2, 28): ['파일 1', '파일 2', '파일 3'],
-  };
+  Map<DateTime, List<String>> _savedFiles = {};
+
+  // 날짜 선택 시 API 호출하여 파일 목록 가져오기
+  Future<void> fetchFiles(String date) async {
+    if (_savedFiles.containsKey(DateTime.parse(date))) {
+      print("이미 가져온 데이터: $date");
+      return; // 이미 가져온 데이터라면 추가 요청 X
+    }
+    print("API 요청 시작 - 날짜: $date");
+    String? userName = await SharedPreferencesManager.getUserName(); // 유저 이름 가져오기
+
+    if (userName == null) {
+      print("로그인이 필요합니다.");
+      return;
+    }
+
+    List<String> files = await Api.getFilesByDate(date, userName);
+    setState(() {
+      _savedFiles[DateTime.parse(date)] = files;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,6 +194,8 @@ class _CalendarViewState extends State<CalendarView> {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
               });
+              // ✅ 날짜 선택 시 API 호출
+              fetchFiles("${selectedDay.year}-${selectedDay.month.toString().padLeft(2, '0')}-${selectedDay.day.toString().padLeft(2, '0')}");
             },
             headerStyle: HeaderStyle(
               formatButtonVisible: false,
