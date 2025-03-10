@@ -12,13 +12,16 @@ import lombok.*;
 @Builder
 public class User {
 
+    @Setter
     @Id
     private String username; // 사용자가 입력한 ID
 
+    @Setter
     @Getter
     @Column(nullable = false)
     private String password; // 비밀번호
 
+    @Setter
     @Getter
     @Column(nullable = false, unique = true)
     private String email;    // 이메일
@@ -27,17 +30,10 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @Setter
+    @Getter
+    @Column(nullable = true)
+    private String fcmToken; // fcm 토큰: 푸시 알림 보낼 때 필요
 
     // role 값을 가져올 때 자동으로 대문자로 변환
     public String getRole() {

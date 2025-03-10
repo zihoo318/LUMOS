@@ -16,4 +16,8 @@ public interface RegisterRepository extends JpaRepository<Register, Integer> {
             "WHERE r.registerDate = :date " +
             "AND u.username = :username")
     List<String> findCodeNamesByDate(@Param("date") LocalDate date, @Param("username") String username);
+
+    // 특정 code_id를 가진 user_id 목록 조회
+    @Query("SELECT r.user FROM Register r WHERE r.code = :codeId")
+    List<Integer> findUserIdsByCodeId(Long codeId);
 }
