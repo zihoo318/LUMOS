@@ -1,7 +1,8 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'api.dart';
 import 'login.dart'; // JSON 변환을 위해 필요
 
 
@@ -21,8 +22,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
 
-  // 백엔드 API 주소
-  final String apiUrl = "http://172.16.28.155:8080/api/users/register";
 
   // 비밀번호 검증 함수 (영어 + 숫자 조합, 8~16자)
   bool validatePassword(String password) {
@@ -38,7 +37,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   // 회원가입 요청 함수
-  Future<void> signUp() async {
+  Future<void> _handleSignUp() async {
     if (passwordController.text != confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("비밀번호가 일치하지 않습니다.")),
@@ -60,40 +59,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
-    Map<String, dynamic> requestBody = {
-      "username": usernameController.text,
-      "password": passwordController.text,
-      "email": emailController.text,
-      "role": widget.role,
-    };
+    // Firebase FCM 토큰 가져오기
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+    print("FCM Token: $fcmToken");
 
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(requestBody),
-      );
+    final response = await Api.signUp(
+      username: usernameController.text,
+      password: passwordController.text,
+      email: emailController.text,
+      role: widget.role,
+      fcmToken: fcmToken,
+    );
 
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("회원가입 성공!")),
-        );
 
-        // 회원가입 성공 시 로그인 화면으로 이동
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
-
-      } else {
-        // 응답 본문이 메시지일 경우
-        String message = utf8.decode(response.bodyBytes);  // 서버에서 전달된 오류 메시지
-        print("응답 메시지: $message");  // 응답 메시지 출력
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
-      }
-    } catch (error) {
+    if (response['success']) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("네트워크 오류가 발생했습니다. 다시 시도해주세요.")),
+        SnackBar(content: Text("회원가입 성공!")),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response['error'])),
       );
     }
   }
@@ -188,7 +177,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       width: 300,
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: signUp, // 버튼 클릭 시 signUp() 함수 실행
+                        onPressed: _handleSignUp, // 버튼 클릭 시 signUp() 함수 실행
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
                           minimumSize: Size(double.infinity, 50),

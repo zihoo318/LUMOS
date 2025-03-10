@@ -1,11 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:lumos/signupStart.dart';
 import 'dart:convert';
+import 'Home.dart';
+import 'api.dart';
 import 'signup.dart';
 import 'SharedPreferencesManager.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Flutter 엔진 초기화
+  await Firebase.initializeApp(); // Firebase 초기화
   runApp(MyApp());
 }
 
@@ -28,19 +34,23 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  Future<void> login() async {
+  Future<void> _handleLogin() async {
     final String username = _usernameController.text;
     final String password = _passwordController.text;
 
-    // 로그인 API 호출
-    final response = await http.post(
-      Uri.parse('http://172.16.28.155:8080/api/users/login'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'username': username,
-        'password': password,
-      }),
-    );
+    // FCM 토큰 가져오기
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+
+    final response = await Api.login(username, password, fcmToken ?? "");
+
+    if (response['success']) {
+      print('로그인 성공: ${response['data']}');
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
+      );
+
 
     if (response.statusCode == 200) {
       // 로그인 성공 시, 처리
@@ -48,14 +58,15 @@ class _LoginScreenState extends State<LoginScreen> {
       print('로그인 성공: ${data}');
       // 이후 화면 이동 등의 작업
       await SharedPreferencesManager.saveUserName(username);
+
     } else {
-      // 로그인 실패 시, 오류 처리
-      final errorMessage = response.body; // 오류 메시지 받기
+      // 로그인 실패 시 Snackbar로 에러 메시지 출력
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(errorMessage),
+        content: Text(response['error']),
       ));
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: SizedBox(
                       width: 280, // 버튼 크기 조정
                       child: ElevatedButton(
-                        onPressed: login,
+                        onPressed: _handleLogin,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           minimumSize: Size(double.infinity, 50),

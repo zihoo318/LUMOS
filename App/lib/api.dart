@@ -1,33 +1,76 @@
 // lib/api.dart
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'SharedPreferencesManager.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 class Api {
   // 공통 API URL 설정
+
   static const String baseUrl = "http://172.30.1.20:8080/api";
 
   // 로그인 API
-  static Future<Map<String, dynamic>> login(String email, String password) async {
+  static Future<Map<String, dynamic>> login(String username, String password, String fcmToken) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/users/login'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
-          'email': email,
+          'username': username,
           'password': password,
+          'fcmToken': fcmToken,
         }),
       );
 
       if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        return data;  // 성공 시 반환
+        final data = json.decode(response.body);
+
+        // 로그인 성공 시 SharedPreferences에 저장
+        await SharedPreferencesManager.saveUserName(username);
+
+        return {'success': true, 'data': data}; // 성공 시 응답 데이터 반환
       } else {
-        throw Exception('로그인 실패');
+        return {'success': false, 'error': response.body}; // 실패 시 에러 메시지 반환
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      return {'success': false, 'error': 'Error: $e'}; // 예외 발생 시 처리
+    }
+  }
+
+  // 회원가입 API
+  static Future<Map<String, dynamic>> signUp({
+    required String username,
+    required String password,
+    required String email,
+    required String role,
+    String? fcmToken,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/users/register'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "username": username,
+          "password": password,
+          "email": email,
+          "role": role,
+          "fcmToken": fcmToken,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return {'success': true};
+      } else {
+        String message = utf8.decode(response.bodyBytes);
+        return {'success': false, 'error': message};
+      }
+    } catch (e) {
+      return {'success': false, 'error': '네트워크 오류가 발생했습니다. 다시 시도해주세요.'};
     }
   }
 
@@ -102,6 +145,28 @@ class Api {
     }
   }
 
+
+  // 날짜별 파일 목록 조회 API 추가
+  static Future<List<String>> getFilesByDate(String date, String userName) async {
+    print("API 요청 시작 - getFilesByDate: $date");
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/calendar/files?date=$date&user=$userName'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        // UTF-8 디코딩 추가
+        String responseBody = utf8.decode(response.bodyBytes);
+        List<dynamic> fileList = json.decode(responseBody);
+        return List<String>.from(fileList);
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("파일 불러오기 실패: $e");
+      return [];
+
   // 새로운 카테고리 생성 API
   static Future<Map<String, dynamic>> createCategory(String categoryName) async {
     try {
@@ -131,6 +196,107 @@ class Api {
     }
   }
 
+  // "다운로드" 폴더에 저장
+  static Future<String?> downloadFile(String fileName) async {
+    try {
+      // 1. 저장소 권한 요청
+      if (!await _requestStoragePermission()) {
+        print("저장소 권한이 거부됨");
+        return null;
+      }
 
+      // 2. 서버에서 파일 다운로드 요청
+      final response = await http.get(Uri.parse('$baseUrl/files/download/$fileName'));
 
+      if (response.statusCode == 200) {
+        // 3. 갤럭시 "다운로드" 폴더 경로 설정
+        Directory downloadsDir = Directory('/storage/emulated/0/Download');
+
+        // 4. 파일 저장 경로 지정 (`Download/파일이름`)
+        String filePath = "${downloadsDir.path}/$fileName";
+        File file = File(filePath);
+
+        // 5. 파일 저장
+        await file.writeAsBytes(response.bodyBytes);
+        print("파일 다운로드 완료: $filePath");
+
+        // 6. 다운로드 완료 알림 표시
+        _showDownloadNotification(filePath, fileName);
+
+        // 7. 시스템에 다운로드 파일 등록 (내 파일 앱에서 보이게)
+        await _registerDownload(filePath);
+
+        return filePath;
+      } else {
+        print("파일 다운로드 실패: 서버 응답 오류");
+        return null;
+      }
+    } catch (e) {
+      print("파일 다운로드 오류: $e");
+      return null;
+    }
+  }
+
+  // 🛠️ 저장소 권한 요청 함수
+  static Future<bool> _requestStoragePermission() async {
+    if (Platform.isAndroid) {
+      if (await Permission.storage.request().isGranted) {
+        return true; // 저장소 권한 허용됨
+      }
+
+      // Android 11 이상에서는 MANAGE_EXTERNAL_STORAGE 필요
+      if (await Permission.manageExternalStorage.request().isGranted) {
+        return true;
+      }
+    }
+
+    print("❌ 저장소 권한이 거부됨");
+    return false;
+  }
+
+  // 📌 📢 다운로드 완료 알림 표시
+  static Future<void> _showDownloadNotification(String filePath, String fileName) async {
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    final InitializationSettings initializationSettings =
+    InitializationSettings(android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+      'download_channel',
+      '파일 다운로드',
+      importance: Importance.high,
+      priority: Priority.high,
+      showWhen: true,
+    );
+
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      '다운로드 완료',
+      '$fileName 다운로드가 완료되었습니다.',
+      platformChannelSpecifics,
+    );
+  }
+
+  // 📌 🛠️ 시스템에 다운로드 파일 등록 (내 파일 앱에서 보이게)
+  static Future<void> _registerDownload(String filePath) async {
+    try {
+      File file = File(filePath);
+      if (await file.exists()) {
+        print("✅ 다운로드 파일이 시스템에 등록됨: $filePath");
+      } else {
+        print("❌ 다운로드 파일이 존재하지 않음!");
+      }
+    } catch (e) {
+      print("❌ 다운로드 등록 오류: $e");
+    }
+  }
 }
