@@ -440,54 +440,51 @@ class _CodeInputScreenState extends State<CodeInputScreen> {
     );
   }
 
+  Widget _buildBottomNavigationBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.6),
+      ),
+      child: BottomNavigationBar(
+        backgroundColor: Colors.transparent,
+        selectedItemColor: Color(0xFF020142),
+        unselectedItemColor: Colors.grey,
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
 
-
-Widget _buildBottomNavigationBar() {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white.withOpacity(0.6),
-    ),
-    child: BottomNavigationBar(
-      backgroundColor: Colors.transparent,
-      selectedItemColor: Color(0xFF020142),
-      unselectedItemColor: Colors.grey,
-      currentIndex: _currentIndex,
-      onTap: (index) {
-        setState(() {
-          _currentIndex = index;
-        });
-
-        // 선택한 탭에 맞는 페이지로 이동
-        switch (index) {
-          case 0:
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => CodeInputScreen()),
-            );
-            break;
-          case 1:
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => Home()),
-            );
-            break;
-          case 2:
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => MyPage()), // 현재 페이지
-            );
-            break;
-        }
-      },
-      items: [
-        BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: '코드추가'),
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이페이지'),
-      ],
-    ),
-  );
+          // 선택한 탭에 맞는 페이지로 이동
+          switch (index) {
+            case 0:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => CodeInputScreen()),
+              );
+              break;
+            case 1:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              );
+              break;
+            case 2:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MyPage()), // 현재 페이지
+              );
+              break;
+          }
+        },
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: '코드추가'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이페이지'),
+        ],
+      ),
+    );
+  }
 }
-}
-
 
 

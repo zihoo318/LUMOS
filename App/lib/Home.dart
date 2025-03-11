@@ -3,8 +3,29 @@ import 'package:lumos/SharedPreferencesManager.dart';
 import 'package:lumos/pdftransform.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'MyPage.dart'; // MyPage 화면 import
+import 'SharedPreferencesManager.dart';
+import 'api.dart';
 import 'codeplus.dart';
 import 'api.dart';
+import 'pdftransform.dart'; // ✅ PDF 변환 화면 import
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Calendar App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: Home(), // Home 위젯 실행
+    );
+  }
+}
 
 class Home extends StatefulWidget {
   @override
@@ -159,10 +180,27 @@ class CalendarView extends StatefulWidget {
 class _CalendarViewState extends State<CalendarView> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  Map<DateTime, List<String>> _savedFiles = {
-    DateTime(2025, 2, 20): ['파일 1', '파일 2'],
-    DateTime(2025, 2, 28): ['파일 1', '파일 2', '파일 3'],
-  };
+  Map<DateTime, List<String>> _savedFiles = {};
+
+  // 날짜 선택 시 API 호출하여 파일 목록 가져오기
+  Future<void> fetchFiles(String date) async {
+    if (_savedFiles.containsKey(DateTime.parse(date))) {
+      print("이미 가져온 데이터: $date");
+      return; // 이미 가져온 데이터라면 추가 요청 X
+    }
+    print("API 요청 시작 - 날짜: $date");
+    String? userName = await SharedPreferencesManager.getUserName(); // 유저 이름 가져오기
+
+    if (userName == null) {
+      print("로그인이 필요합니다.");
+      return;
+    }
+
+    List<String> files = await Api.getFilesByDate(date, userName);
+    setState(() {
+      _savedFiles[DateTime.parse(date)] = files;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -181,6 +219,8 @@ class _CalendarViewState extends State<CalendarView> {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
               });
+              // ✅ 날짜 선택 시 API 호출
+              fetchFiles("${selectedDay.year}-${selectedDay.month.toString().padLeft(2, '0')}-${selectedDay.day.toString().padLeft(2, '0')}");
             },
             headerStyle: HeaderStyle(
               formatButtonVisible: false,
@@ -198,23 +238,23 @@ class _CalendarViewState extends State<CalendarView> {
             ),
           ),
         ),
-        Spacer(), // 🔹 달력 아래의 빈 공간을 최대한 활용하여 네비게이션 바 기준 고정
+        Spacer(),
         Padding(
-          padding: EdgeInsets.only(bottom: 45), // 🔹 네비게이션 바 기준 45px 띄움
-          child: _buildFileList(),
+          padding: EdgeInsets.only(bottom: 45),
+          child: _buildFileList(context), // ✅ context를 전달해야 함
         ),
       ],
     );
   }
 
-  Widget _buildFileList() {
+  Widget _buildFileList(BuildContext context) {
     DateTime? matchedDate = _savedFiles.keys.firstWhere(
           (date) => isSameDay(date, _selectedDay),
-      orElse: () => DateTime(0), // 만약 없으면 기본값 반환
+      orElse: () => DateTime(0),
     );
 
     List<String> files = matchedDate.year != 0 ? _savedFiles[matchedDate] ?? [] : [];
-    int fileCount = files.length; // ✅ 파일 개수 계산
+    int fileCount = files.length;
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.9,
@@ -244,27 +284,43 @@ class _CalendarViewState extends State<CalendarView> {
               ),
             ),
           ),
+          SizedBox(height: 10),
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: files
-                  .map((file) => Padding(
-                padding: EdgeInsets.symmetric(vertical: 7), // 파일 이름 사이 간격
-                child: Text(
-                  file,
-                  style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
-              ))
-                  .toList(),
+            child: ListView(
+              children: files.map((file) => _buildFileItem(context, file)).toList(),
             ),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildFileItem(BuildContext context, String fileName) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PdfTransformScreen(fileName: fileName), // ✅ 파일명 전달
+          ),
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 7),
+        child: Text(
+          fileName,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
 }
+
 
 class CategoryView extends StatefulWidget {
   final Future<Map<String, List<Map<int, String>>>> categoryCodesFuture;
@@ -380,7 +436,6 @@ class _CategoryViewState extends State<CategoryView> {
     List<Map<int, String>> filesList = _categoryFiles[category] ?? [];
 
     print("카테고리: $category, 파일 리스트: $filesList");
-
     return Column(
       children: [
         SizedBox(height: 10),

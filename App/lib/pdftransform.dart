@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // 클립보드 복사 기능 추가
+import 'package:flutter/services.dart';
 
+import 'api.dart'; // 클립보드 복사 기능 추가
 
 class PdfTransformScreen extends StatefulWidget {
   final int codeId; // codeId를 받는 변수
@@ -14,8 +15,9 @@ class PdfTransformScreen extends StatefulWidget {
 }
 
 class _PdfTransformScreenState extends State<PdfTransformScreen> {
-  TextEditingController textBoxController = TextEditingController();
-  String selectedPdf = "원본 PDF";
+
+  TextEditingController textBoxController = TextEditingController(); // 텍스트 박스 컨트롤러
+  String selectedPdf = "원본 PDF"; // 기본 선택값을 원본 PDF로 설정
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +47,11 @@ class _PdfTransformScreenState extends State<PdfTransformScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Text(
+                  "📄 ${widget.codeName}", // ✅ 클릭한 파일 이름 표시
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -119,7 +126,22 @@ class _PdfTransformScreenState extends State<PdfTransformScreen> {
                     ),
                     SizedBox(width: 35),
                     ElevatedButton(
-                      onPressed: () {},
+
+                      onPressed: () async {
+                        String codeName = selectedPdf == "원본 PDF" ? "test_original.pdf" : "test_summary.pdf";
+
+                        String? filePath = await Api.downloadFile(codeName);
+
+                        if (filePath != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("파일 다운로드 완료: $filePath")),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("파일 다운로드 실패")),
+                          );
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFFFFE786),
                         minimumSize: Size(140, 50),

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>파일 수정 - Admin</title>
-  <link rel="stylesheet" href="/static/styles.css">
-  <script src="/static/script.js" defer></script>
+  <link rel="stylesheet" href="../static/styles.css">
+  <script src="../static/script.js" defer></script>
   <style>
     .search-container {
         position: relative;
@@ -40,19 +40,39 @@
         margin-top: 20px;
     }
 
-    .file-table {
+        .file-table {
         width: 100%;
+        table-layout: auto; /* 고정형(fixed) 대신 자동(auto)으로 변경 */
         border-collapse: collapse;
-        text-align: left;
+        text-align: center; /* 모든 열 가운데 정렬 */
+        margin-top:3px;
+        margin-left:20px;
     }
 
     .file-table th, .file-table td {
-        padding: 10px;
+        padding: 12px;
         color: #232072;
     }
 
     .file-table th {
         font-weight: bold;
+      text-align: center; /* 헤더도 가운데 정렬 */
+    }
+
+    .file-table td {
+        text-align: center; /* 모든 셀 가운데 정렬 */
+    }
+
+    .file-table th:first-child, .file-table td:first-child {
+        text-align: left; /* 파일 이름만 왼쪽 정렬 */
+        padding-left: 30px; /* 약간의 여백 추가 */
+    }
+
+
+    .file-table td:nth-child(2),
+    .file-table td:nth-child(3),
+    .file-table td:nth-child(4) {
+        width: 23%; /* 다른 열들의 너비를 균등하게 설정 */
     }
 
     .edit-btn {
@@ -69,7 +89,7 @@
 <div id="content" class="edit-file-container">
   <div class="file-edit-section">
     <div class="search-container">
-      <img src="/static/images/search-icon.png" alt="Search" class="search-icon">
+      <img src="../static/images/search-icon.png" alt="Search" class="search-icon">
       <input type="text" id="search" class="search-input" placeholder="search">
     </div>
 
@@ -78,7 +98,6 @@
         <thead>
         <tr>
           <th>파일 이름</th>
-          <th>파일 유형</th>
           <th>생성 날짜</th>
           <th>등록 날짜</th>
           <th>수정</th>
@@ -87,28 +106,24 @@
         <tbody>
         <tr>
           <td>코드 / 사용자설정이름</td>
-          <td>요약본</td>
           <td>생성날짜</td>
           <td>등록날짜</td>
           <td><button class="edit-btn">수정</button></td>
         </tr>
         <tr>
           <td>코드 / 사용자설정이름</td>
-          <td>원본</td>
           <td>생성날짜</td>
           <td>등록날짜</td>
           <td><button class="edit-btn">수정</button></td>
         </tr>
         <tr>
           <td>코드 / 사용자설정이름</td>
-          <td>요약본</td>
           <td>생성날짜</td>
           <td>등록날짜</td>
           <td><button class="edit-btn">수정</button></td>
         </tr>
         <tr>
           <td>코드 / 사용자설정이름</td>
-          <td>원본</td>
           <td>생성날짜</td>
           <td>등록날짜</td>
           <td><button class="edit-btn">수정</button></td>

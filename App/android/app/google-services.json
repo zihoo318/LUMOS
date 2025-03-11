@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "563845824237",
+    "project_id": "lumos-e7a1a",
+    "storage_bucket": "lumos-e7a1a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:563845824237:android:ee91878deb8f49608556e4",
+        "android_client_info": {
+          "package_name": "com.example.lumos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBltACZqPo1t67pcnIofXATwqFu2uD62L8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -5,11 +5,12 @@ import com.lumos.LUMOS.entity.Register;
 import com.lumos.LUMOS.entity.User;
 import com.lumos.LUMOS.repository.RegisterRepository;
 import com.lumos.LUMOS.repository.CodeRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,5 +55,15 @@ public class RegisterService {
         registerRepository.save(register);
 
         return "Nickname saved successfully for the code.";
+    }
+
+    // 특정 날짜의 파일 목록 조회
+    // 중복 실행 방지를 위해 readOnly 모드 설정
+    @Transactional(readOnly = true)
+    public List<String> getFilesByDate(LocalDate date, String userName) {
+        if (userName == null || userName.isEmpty()) {
+            throw new IllegalArgumentException("유저 이름이 제공되지 않았습니다.");
+        }
+        return registerRepository.findCodeNamesByDate(date, userName);
     }
 }
