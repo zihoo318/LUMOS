@@ -6,7 +6,7 @@ import 'SharedPreferencesManager.dart';
 
 class Api {
   // 공통 API URL 설정
-  static const String baseUrl = "http://192.168.45.112:8080/api";
+  static const String baseUrl = "http://192.168.159.1:8080/api";
 
   // 로그인 API
   static Future<Map<String, dynamic>> login(String username, String password) async {

@@ -1,0 +1,2 @@
+C:/Users/KJH/LUMOS/App/android/app/.cxx/RelWithDebInfo/5e3l515u/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/KJH/LUMOS/App/android/app/.cxx/RelWithDebInfo/5e3l515u/arm64-v8a/CMakeFiles/rebuild_cache.dir
