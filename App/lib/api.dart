@@ -12,7 +12,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class Api {
   // 공통 API URL 설정
 
-  static const String baseUrl = "http://172.30.1.20:8080/api";
+  static const String baseUrl = "http://223.194.156.80:8080/api";
 
   // 로그인 API
   static Future<Map<String, dynamic>> login(String username, String password, String fcmToken) async {
@@ -28,19 +28,15 @@ class Api {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-
-        // 로그인 성공 시 SharedPreferences에 저장
-        await SharedPreferencesManager.saveUserName(username);
-
-        return {'success': true, 'data': data}; // 성공 시 응답 데이터 반환
+        return json.decode(response.body);  // 로그인 성공 시 JSON 데이터 반환
       } else {
-        return {'success': false, 'error': response.body}; // 실패 시 에러 메시지 반환
+        return {'error': json.decode(response.body)['error']};  // 오류 메시지 반환
       }
     } catch (e) {
-      return {'success': false, 'error': 'Error: $e'}; // 예외 발생 시 처리
+      return {'error': '서버 요청 중 오류 발생: $e'};
     }
   }
+
 
   // 회원가입 API
   static Future<Map<String, dynamic>> signUp({
@@ -166,6 +162,8 @@ class Api {
     } catch (e) {
       print("파일 불러오기 실패: $e");
       return [];
+    }
+  }
 
   // 새로운 카테고리 생성 API
   static Future<Map<String, dynamic>> createCategory(String categoryName) async {
