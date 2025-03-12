@@ -295,20 +295,20 @@ class _CalendarViewState extends State<CalendarView> {
     );
   }
 
-  Widget _buildFileItem(BuildContext context, String fileName) {
+  Widget _buildFileItem(BuildContext context, String codeName) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PdfTransformScreen(fileName: fileName), // ✅ 파일명 전달
+            builder: (context) => PdfTransformScreen(codeName: codeName), // ✅ 파일명 전달
           ),
         );
       },
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 7),
         child: Text(
-          fileName,
+          codeName,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -462,7 +462,6 @@ class _CategoryViewState extends State<CategoryView> {
           context,
           MaterialPageRoute(
             builder: (context) => PdfTransformScreen(
-              codeId: file.key,     // codeId
               codeName: file.value, // codeName
             ),
           ),

@@ -174,7 +174,7 @@ class _MyPageState extends State<MyPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PdfTransformScreen(fileName: title), // 수정된 부분
+            builder: (context) => PdfTransformScreen(codeName: title), // 수정된 부분
           ),
         );
       },
@@ -198,13 +198,13 @@ class _MyPageState extends State<MyPage> {
     );
   }
 
-  Widget _buildFileItem(BuildContext context, Map<String, String> file) {
+  Widget _buildFileItem(BuildContext context, Map<int, String> file) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PdfTransformScreen(fileName: file["name"]!), // ✅ 클릭한 파일명 전달
+            builder: (context) => PdfTransformScreen(codeName: file["name"]!), // ✅ 클릭한 파일명 전달
           ),
         );
       },

@@ -4,11 +4,10 @@ import 'package:flutter/services.dart';
 import 'api.dart'; // 클립보드 복사 기능 추가
 
 class PdfTransformScreen extends StatefulWidget {
-  final int codeId; // codeId를 받는 변수
   final String codeName; // codeName을 받는 변수
 
   // 생성자에서 codeId와 codeName을 받도록 설정
-  PdfTransformScreen({required this.codeId, required this.codeName});
+  PdfTransformScreen({required this.codeName});
 
   @override
   _PdfTransformScreenState createState() => _PdfTransformScreenState();
