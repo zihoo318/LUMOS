@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:lumos/SharedPreferencesManager.dart';
+import 'package:lumos/pdftransform.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'MyPage.dart'; // MyPage 화면 import
 import 'SharedPreferencesManager.dart';
 import 'api.dart';
 import 'codeplus.dart';
+import 'api.dart';
 import 'pdftransform.dart'; // ✅ PDF 변환 화면 import
 
 void main() {
@@ -38,6 +41,26 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentIndex = 1; // 현재 선택된 인덱스 (기본값: 홈)
   bool _isCategoryView = false; // ✅ 날짜별 & 카테고리별 전환 여부
+  late Future<Map<String, List<Map<int, String>>>> _categoryCodesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    // 카테고리 목록을 가져와서 SharedPreferences 업데이트
+    fetchCategories();
+    // API 호출을 위한 Future 설정
+    _categoryCodesFuture = Api().fetchUserCategoryCodes();
+    print("initState");
+    print(_categoryCodesFuture);
+  }
+
+  void fetchCategories() async {
+    String? username = await SharedPreferencesManager.getUserName();
+
+    if (username != null) {
+      Api().getCategoriesByUsername(username);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +82,6 @@ class _HomeState extends State<Home> {
                 Column(
                   children: [
                     SizedBox(height: 50),
-                    // ✅ '날짜별' 또는 '카테고리별' 화면 제목
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -86,7 +108,9 @@ class _HomeState extends State<Home> {
                       ],
                     ),
                     Expanded(
-                      child: _isCategoryView ? CategoryView() : CalendarView(),
+                      child: _isCategoryView
+                          ? CategoryView(categoryCodesFuture: _categoryCodesFuture) // 파라미터 전달
+                          : CalendarView(),
                     ),
                   ],
                 ),
@@ -146,6 +170,7 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
 
 class CalendarView extends StatefulWidget {
   @override
@@ -270,20 +295,20 @@ class _CalendarViewState extends State<CalendarView> {
     );
   }
 
-  Widget _buildFileItem(BuildContext context, String fileName) {
+  Widget _buildFileItem(BuildContext context, String codeName) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PdfTransformScreen(fileName: fileName), // ✅ 파일명 전달
+            builder: (context) => PdfTransformScreen(codeName: codeName), // ✅ 파일명 전달
           ),
         );
       },
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 7),
         child: Text(
-          fileName,
+          codeName,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -298,24 +323,19 @@ class _CalendarViewState extends State<CalendarView> {
 
 
 class CategoryView extends StatefulWidget {
+  final Future<Map<String, List<Map<int, String>>>> categoryCodesFuture;
+
+  // 생성자에서 categoryCodesFuture를 받아옵니다.
+  CategoryView({required this.categoryCodesFuture});
+
   @override
   _CategoryViewState createState() => _CategoryViewState();
 }
 
 class _CategoryViewState extends State<CategoryView> {
   Set<String> _selectedCategories = {}; // ✅ 여러 개의 카테고리를 선택 가능하도록 변경
-  Map<String, List<Map<String, String>>> _categoryFiles = {
-    "데이터베이스": [
-      {"name": "1주차"},
-      {"name": "2주차"},
-    ],
-    "데이터마이닝": [{"name": "3주차"}],
-    "자료구조": [{"name": "4주차"},
-      {"name": "5주차"}],
-    "알고리즘": [{"name": "7주차"}],
-  };
-
-  List<String> _categories = ["데이터베이스", "데이터마이닝", "자료구조", "알고리즘"];
+  Map<String, List<Map<int, String>>> _categoryFiles = {}; // [카테고리이름 : [{코드Id : 코드이름}, {...}]]
+  List<String> _categories = []; // 카테고리 이름 리스트
 
   @override
   Widget build(BuildContext context) {
@@ -327,39 +347,45 @@ class _CategoryViewState extends State<CategoryView> {
         SizedBox(height: 35), //상단바와 박스 사이 여백
         SizedBox(
           height: boxHeight,
-          child: Center(
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.83,
-              height: boxHeight,
-              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.black, width: 1),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Text(
-                      "${_categories.length} categories",
-                      style: TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
+          child: SingleChildScrollView( // ✅ SingleChildScrollView로 감싸기
+            child: Center(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.83,
+                height: boxHeight,
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: Colors.black, width: 1),
+                ),
+                child: FutureBuilder<Map<String, List<Map<int, String>>>>(
+                  future: widget.categoryCodesFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      //print("367줄 snapshot.hasError: ${snapshot.error}");
+                      return Center(child: Text("Error: ${snapshot.error}"));
+                    } else if (snapshot.hasData) {
+                      Map<String, List<Map<int, String>>> categoryData = snapshot.data!;
+                      //print("370줄 categoryData: $categoryData");
+                      _categoryFiles = categoryData;
+                      _categories = categoryData.keys.toList();
+
+                      //print("374줄 _categoryFiles: $_categoryFiles");
+
+                      return Column(
                         children: _categories.expand((category) => [
                           _buildCategoryButton(category),
                           if (_selectedCategories.contains(category))
-                            _buildFileList(context, category),
+                            _buildFileList(context, category), // 선택된 카테고리만 파일 목록을 표시
                         ]).toList(),
-                      ),
-                    ),
-                  ),
-                ],
+                      );
+                    } else {
+                      return Center(child: Text("No data available"));
+                    }
+                  },
+                ),
               ),
             ),
           ),
@@ -408,48 +434,56 @@ class _CategoryViewState extends State<CategoryView> {
   }
 
   Widget _buildFileList(BuildContext context, String category) {
-    List<Map<String, String>> files = _categoryFiles[category] ?? [];
+    // 해당 카테고리의 파일 목록을 가져옵니다.
+    List<Map<int, String>> filesList = _categoryFiles[category] ?? [];
+
+    print("카테고리: $category, 파일 리스트: $filesList");
     return Column(
       children: [
         SizedBox(height: 10),
         Align(
           alignment: Alignment.topRight,
           child: Text(
-            "${files.length} files",
+            "${filesList.length} files",
             style: TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.bold),
           ),
         ),
         SizedBox(height: 10),
-        ...files.map((file) => _buildFileItem(context, file)).toList(), // ✅ context 추가
+        // 카테고리별로 파일 버튼을 생성
+        ...filesList.expand((fileMap) {
+          return fileMap.entries.map((file) => _buildFileItem(context, file));
+        }).toList(),
       ],
     );
   }
 
 
-
-  Widget _buildFileItem(BuildContext context, Map<String, String> file) {
+  Widget _buildFileItem(BuildContext context, MapEntry<int, String> file) {
+    // codeName을 전달하는 버튼을 만들기
     return GestureDetector(
       onTap: () {
+        // 버튼 클릭 시 PdfTransformScreen으로 codeName을 전달
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PdfTransformScreen(fileName: file["name"]!), // ✅ 클릭한 파일명 전달
+            builder: (context) => PdfTransformScreen(
+              codeName: file.value, // codeName
+            ),
           ),
         );
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 40),
-        child: Row(
-          children: [
-            Text(
-              file["name"]!,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ],
+        padding: EdgeInsets.symmetric(vertical: 7),
+        child: Text(
+          file.value,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          textAlign: TextAlign.center,
         ),
       ),
     );
   }
-
-
 }

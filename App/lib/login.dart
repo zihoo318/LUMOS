@@ -43,29 +43,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final response = await Api.login(username, password, fcmToken ?? "");
 
-    if (response['success']) {
-      print('로그인 성공: ${response['data']}');
+    print("서버 응답: ${jsonEncode(response)}");
 
+    if (response.containsKey('username')) {  // 로그인 성공
+      print('로그인 성공: ${response['username']}');
+
+      // 사용자 이름 저장
+      await SharedPreferencesManager.saveUserName(response['username']);
+
+      // 홈 화면으로 이동
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Home()),
       );
-
-
-    if (response.statusCode == 200) {
-      // 로그인 성공 시, 처리
-      final data = json.decode(response.body);
-      print('로그인 성공: ${data}');
-      // 이후 화면 이동 등의 작업
-      await SharedPreferencesManager.saveUserName(username);
-
     } else {
-      // 로그인 실패 시 Snackbar로 에러 메시지 출력
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(response['error']),
-      ));
+      // 로그인 실패 시 에러 메시지 표시
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response['error'] ?? "로그인 실패")),
+      );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

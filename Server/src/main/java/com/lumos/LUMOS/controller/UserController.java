@@ -8,6 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -41,10 +45,19 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody User user) {
         try {
-            // 로그인 시, 비밀번호를 BCrypt로 암호화하여 비교
-            User loggedInUser = userService.loginUser(user.getUsername(), user.getPassword(), user.getFcmToken());            return ResponseEntity.ok(loggedInUser); // 로그인 성공 시 유저 정보 반환
+            User loggedInUser = userService.loginUser(user.getUsername(), user.getPassword(), user.getFcmToken());
+
+            // 반환할 데이터 (비밀번호 제외)
+            Map<String, Object> response = new HashMap<>();
+            response.put("username", loggedInUser.getUsername());
+            response.put("role", loggedInUser.getRole());
+            response.put("email", loggedInUser.getEmail());
+            response.put("fcmToken", loggedInUser.getFcmToken());
+
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 오류 메시지 반환
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", e.getMessage()));
         }
     }
+
 }

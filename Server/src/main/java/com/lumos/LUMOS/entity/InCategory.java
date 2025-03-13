@@ -22,4 +22,6 @@ public class InCategory {
     @JoinColumn(name = "codeId", nullable = false)
     private Code code; // 코드 ID (다대일 관계, Code 엔티티 참조)
 
+    private String codeName; // 코드 이름
+
 }
