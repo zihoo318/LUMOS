@@ -22,5 +22,6 @@ public class InCategory {
     @JoinColumn(name = "codeId", nullable = false)
     private Code code; // 코드 ID (다대일 관계, Code 엔티티 참조)
 
-    private int fileType; // 파일 타입 (1: 텍스트, 2: 원본 PDF, 3: 요약 PDF)
+    private String codeName; // 코드 이름
+
 }

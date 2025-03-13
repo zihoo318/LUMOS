@@ -84,7 +84,7 @@
   </style>
 </head>
 <body>
-<img src="/static/images/logo.png" alt="Logo" class="logo">
+<img src="../static/images/logo.png" alt="Logo" class="logo">
 <h1>Sign up</h1>
 
 <div class="form-container">
@@ -106,7 +106,9 @@
   <button class="signup-btn">Sign up</button>
 </div>
 
-<script>
+
+<script type="module">
+  import { API_BASE_URL } from '/static/config.js';
   // 페이지 로드 시 URL에서 role 값을 가져와서 hidden input에 설정
   window.onload = function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -140,7 +142,7 @@
     // 요청이 보내지는지 로그로 확인
     console.log("Sending POST request to the server with data:", userData);
 
-    fetch("http://172.16.28.155:8080/api/users/register", {
+    fetch(API_BASE_URL+"/api/users/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData)
@@ -152,7 +154,7 @@
             .then(data => {
               console.log('Response Data:', data);  // 응답 데이터 확인
               alert("회원가입이 완료되었습니다.");
-              window.location.href = "SignIn.html"; // 로그인 페이지로 이동
+              window.location.href = "/SignIn"; // 로그인 페이지로 이동
             })
             .catch(error => {
               console.error("Error:", error); // 에러가 발생할 경우 에러 메시지 확인

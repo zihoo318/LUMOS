@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>파일 수정 - PDF 뷰어</title>
-    <link rel="stylesheet" href="/static/styles.css">
-    <script src="/static/script.js" defer></script>
+    <link rel="stylesheet" href="../static/styles.css">
+    <script src="../static/script.js" defer></script>
     <style>
         /* 📌 Content 전체 이동 (오른쪽으로 옮기기) */
         #pdf-content {
@@ -80,7 +80,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // 🔹 사이드바 자동 로드
-        fetch("common/sidebar.html")
+        fetch("templates/common/sidebar.html")
             .then(response => response.text())
             .then(data => {
                 document.getElementById("sidebar-container").innerHTML = data;

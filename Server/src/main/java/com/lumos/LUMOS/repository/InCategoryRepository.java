@@ -3,5 +3,8 @@ package com.lumos.LUMOS.repository;
 import com.lumos.LUMOS.entity.InCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface InCategoryRepository extends JpaRepository<InCategory, Long> {
+import java.util.List;
+
+public interface InCategoryRepository extends JpaRepository<InCategory, Integer> {
+    List<InCategory> findByCategory_User_Username(String username);
 }

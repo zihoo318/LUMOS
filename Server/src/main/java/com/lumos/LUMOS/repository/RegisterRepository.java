@@ -3,6 +3,21 @@ package com.lumos.LUMOS.repository;
 
 import com.lumos.LUMOS.entity.Register;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import java.time.LocalDate;
+
+import java.util.List;
 
 public interface RegisterRepository extends JpaRepository<Register, Integer> {
+    @Query("SELECT r.codeName FROM Register r " +
+            "JOIN r.user u " +
+            "WHERE r.registerDate = :date " +
+            "AND u.username = :username")
+    List<String> findCodeNamesByDate(@Param("date") LocalDate date, @Param("username") String username);
+
+    // 특정 code_id를 가진 user_id 목록 조회
+    @Query("SELECT r.user FROM Register r WHERE r.code = :codeId")
+    List<Integer> findUserIdsByCodeId(Long codeId);
 }

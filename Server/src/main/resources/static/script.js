@@ -1,39 +1,69 @@
 document.addEventListener("DOMContentLoaded", function () {
     // 🔹 현재 페이지 모드를 sessionStorage에서 가져옴
-    let isPdfPage = sessionStorage.getItem("isPdfPage");
-    let isAdminEditPage = sessionStorage.getItem("isAdminEditPage");
+    let sidebarContainer = document.getElementById("sidebar-container");
+        if (!sidebarContainer) {
+            console.error("❌ sidebar-container 요소를 찾을 수 없습니다. HTML 구조를 확인하세요.");
+            return;
+        }
 
-    let sidebarFile = "/templates/common/sidebar.html"; // 기본 사이드바
+        let sidebarFile = "common/sidebar.html"; // 기본 사이드바 경로
+        let isPdfPage = sessionStorage.getItem("isPdfPage");
 
-    // 🔹 PDF 페이지인 경우 pdf_sidebar.html 사용
-    if (isPdfPage === "true") {
-        sidebarFile = "/templates/common/pdf_sidebar.html";
-    }
+        if (isPdfPage === "true") {
+            sidebarFile = "common/pdf_sidebar.html"; // PDF 페이지라면 PDF 사이드바 로드
+        }
 
-    // 🔹 선택된 사이드바를 동적으로 로드
-    fetch(sidebarFile)
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById("sidebar-container").innerHTML = data;
+        fetch(sidebarFile)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("❌ 사이드바 파일을 불러오는 데 실패했습니다. 경로를 확인하세요.");
+                }
+                return response.text();
+            })
+             .then(data => {
+                    let sidebarContainer = document.getElementById("sidebar-container");
+                    if (sidebarContainer) {
+                        sidebarContainer.innerHTML = data;
+                        console.log("✅ 사이드바 로드 완료");
 
-            let logoImg = document.querySelector("#sidebar-container .header img");
-            if (logoImg) {
-                console.log("🔹 로고 경로 설정 시도: images/logo.png");
-                logoImg.src = "/static/images/logo.png";
-            } else {
-                console.log("⚠️ 로고 이미지 태그를 찾을 수 없음!");
+                // 로고 이미지 설정
+                let logoImg = document.querySelector("#sidebar-container .header img");
+                if (logoImg) {
+                    logoImg.src = "../static/images/logo.png";
+                }
+
+                // 관리자 모드 확인
+                let isAdminEditPage = sessionStorage.getItem("isAdminEditPage");
+                if (isAdminEditPage === "true") {
+                    checkAdmin();
                 }
 
 
-            if (isAdminEditPage === "true") {
-                checkAdmin(); // 관리자 권한 확인
-            }
+                // ✅ 사이드바 로드 후 버튼 이벤트 리스너 추가
+                            addEventListeners();
 
-            addEventListeners(); // 이벤트 리스너 추가
-        });
-});
+                            // ✅ "새로운 카테고리 추가" 버튼 클릭 이벤트 리스너 추가
+                            setTimeout(() => {  // 사이드바가 완전히 로드된 후 실행
+                                let newCategoryButton = document.querySelector(".new-category");
+                                if (newCategoryButton) {
+                                    newCategoryButton.addEventListener("click", function () {
+                                        openNewCategoryPopup();
+                                    });
+                                    console.log("✅ 새로운 카테고리 추가 버튼 이벤트 리스너 정상 등록 완료");
+                                } else {
+                                    console.error("❌ 새로운 카테고리 추가 버튼을 찾을 수 없습니다! HTML 구조를 확인하세요.");
+                                }
+                            }, 500); // 0.5초 후 실행
 
-fetch("common/pdf_sidebar.html")
+                        } else {
+                            console.error("❌ #sidebar-container 요소를 찾을 수 없습니다. HTML 구조를 확인하세요.");
+                        }
+                    })
+                    .catch(error => console.error("⚠️ 사이드바 로드 중 오류 발생:", error));
+            });
+
+fetch("../templates/common/pdf_sidebar.html")
+
     .then(response => response.text())
     .then(data => {
         document.getElementById("pdf-sidebar-container").innerHTML = data;
@@ -41,20 +71,20 @@ fetch("common/pdf_sidebar.html")
         // ✅ 로고 이미지 경로를 강제 설정
         let logoImg = document.querySelector("#pdf-sidebar-container .header img");
         if (logoImg) {
-            logoImg.src = "/images/logo.png"; // ✅ 절대 경로 사용
+            logoImg.src = "../images/logo.png"; // ✅ 절대 경로 사용
             console.log("✅ 로고 이미지 경로 변경됨:", logoImg.src);
         } else {
-            console.log("⚠️ 로고 이미지 태그를 찾을 수 없음!");
+            console.log("로고 이미지 태그를 찾을 수 없음!");
         }
     })
-    .catch(error => console.error("⚠️ 사이드바 로드 중 오류 발생:", error));
+    .catch(error => console.error("사이드바 로드 중 오류 발생:", error));
 
 
 // 📌 PDF 보기 페이지로 강제 이동하도록 수정
 function viewPdf(type) {
     let selectedFile = sessionStorage.getItem("selectedFile") || "사용자설정이름"; // 기본값 설정
 
-    console.log("📄 PDF 뷰어로 이동 시도:", selectedFile, type); // 확인용 로그
+    console.log("PDF 뷰어로 이동 시도:", selectedFile, type); // 확인용 로그
 
     // PDF 페이지 모드 활성화
     sessionStorage.setItem("isPdfPage", "true");
@@ -62,7 +92,7 @@ function viewPdf(type) {
 
     // **강제 이동 코드 추가!**
     let targetPage = `pdf_viewer.html?type=${type}&filename=${encodeURIComponent(selectedFile)}`;
-    console.log("🌍 이동할 페이지:", targetPage); // 확인 로그
+    console.log("이동할 페이지:", targetPage); // 확인 로그
     window.location.href = targetPage;
 
     // 팝업 닫기
@@ -76,12 +106,15 @@ function addEventListeners() {
     let saveButton = document.querySelector("#save-button");
 
     if (confirmButton) {
-        confirmButton.addEventListener("click", openPopup);
+        confirmButton.addEventListener("click", openFileNamePopup);
     }
 
     if (saveButton) {
-        saveButton.addEventListener("click", saveFile);
-    }
+            saveButton.addEventListener("click", saveFileName);
+            console.log("✅ 저장 버튼 이벤트 리스너 추가 완료");
+        } else {
+            console.error("❌ 저장 버튼 (#save-button) 요소를 찾을 수 없습니다!");
+        }
 
     // 파일 목록 클릭 이벤트 추가 (원본/요약 선택 팝업)
     document.addEventListener("click", function (event) {
@@ -91,74 +124,242 @@ function addEventListeners() {
     });
 }
 
-// 📌 코드 입력 후 확인 버튼 클릭 시 실행
 function submitCode() {
-    let codeInput = document.getElementById("code-input");
-    let code = codeInput.value.trim();
-
-    if (!code) {
+    let codeInput = document.getElementById("code-input").value.trim();
+    if (!codeInput) {
         alert("코드를 입력하세요.");
         return;
     }
-    openPopup();
+    sessionStorage.setItem("code", codeInput);
+    console.log("✅ 저장된 코드:", sessionStorage.getItem("code")); // 디버깅 로그 추가
+    openFileNamePopup();
 }
 
-// 📌 파일 이름 입력 팝업 열기
-function openPopup() {
+function openFileNamePopup() {
     let popup = document.querySelector("#file-popup");
-    let fileNameInput = document.querySelector("#file-name-input");
+    if (!popup) {
+        console.error("❌ 파일 이름 입력 팝업을 찾을 수 없습니다! HTML 구조를 확인하세요.");
+        return;
+    }
 
+    console.log("📌 파일 이름 입력 팝업 열기");
     popup.style.display = "flex";
-    fileNameInput.value = ""; // 입력 필드 초기화
-    fileNameInput.focus(); // 자동 포커스
+
+    let inputField = document.querySelector("#file-name-input");
+    if (inputField) {
+        inputField.value = "";
+        inputField.focus();
+    } else {
+        console.error("❌ 파일 이름 입력 필드를 찾을 수 없습니다.");
+    }
 }
 
-// 📌 팝업 닫기
-function closePopup() {
-    document.querySelector("#file-popup").style.display = "none";
+function closeFileNamePopup() {
+    let popup = document.getElementById("file-popup");
+    if (popup) {
+        popup.style.display = "none";
+        console.log("📌 파일 이름 입력 팝업 닫기");
+    } else {
+        console.error("❌ 파일 이름 팝업을 찾을 수 없습니다.");
+    }
 }
 
-// 📌 파일 저장 기능 (코드값 + 파일명 저장)
-function saveFile() {
-    let fileNameInput = document.querySelector("#file-name-input");
-    let fileName = fileNameInput.value.trim();
-    let codeInput = document.getElementById("code-input");
-    let code = codeInput.value.trim();
+function saveFileName() {
+    let fileNameInputElement = document.getElementById("file-name-input");
+
+    if (!fileNameInputElement) {
+        console.error("❌ 파일 이름 입력 필드를 찾을 수 없습니다! HTML 구조를 확인하세요.");
+        return;
+    }
+
+    let fileNameInput = fileNameInputElement.value.trim();
+
+    console.log("🛠 입력된 파일 이름:", fileNameInput); // 디버깅 로그 추가
+
+    if (!fileNameInput) {
+        alert("파일 이름을 입력하세요!");
+        return;
+    }
+
+    // 📌 파일 이름 저장 (sessionStorage)
+        sessionStorage.setItem("fileName", fileNameInput);
+        console.log("✅ 저장된 파일 이름:", sessionStorage.getItem("fileName")); // 디버깅 로그 추가
+
+        // 📌 기존 코드에서 `saveFile();` 호출을 제거 (즉시 파일이 추가되는 문제 방지)
+        // 기존 코드 ❌
+        // saveFile();
+
+        closeFileNamePopup();
+}
+
+// 📌 파일 이름 저장 후 카테고리 선택 팝업 열기
+function saveFileName() {
+    let fileName = document.getElementById("file-name-input").value.trim();
 
     if (!fileName) {
         alert("파일 이름을 입력하세요!");
         return;
     }
 
-    if (!code) {
-        alert("코드를 먼저 입력하세요!");
+    // 🔹 파일 이름을 sessionStorage에 저장
+        sessionStorage.setItem("fileName", fileName);
+        console.log("✅ 저장된 파일 이름:", fileName); // 디버깅 로그 추가
+
+  // 📌 이제 카테고리 설정 팝업을 띄운다.
+    // 입력 필드 초기화
+    document.getElementById("file-name-input").value = "";
+    openCategoryPopup();
+}
+
+function openCategoryPopup() {
+    document.querySelector("#category-popup").style.display = "flex";
+}
+
+function closeCategoryPopup() {
+    document.querySelector("#category-popup").style.display = "none";
+}
+
+// 📌 카테고리 선택 후 파일 저장 실행
+function selectCategory(category) {
+    console.log("📌 선택된 카테고리:", category); // 디버깅 로그 추가
+    sessionStorage.setItem("selectedCategory", category);
+
+    // ✅ 파일 이름 입력 팝업을 강제로 닫음
+    closeFileNamePopup();
+
+    // 📌 카테고리 선택 후 `saveFile()` 실행
+    closeCategoryPopup();
+    saveFile();
+}
+
+function openNewCategoryPopup() {
+    document.querySelector("#new-category-popup").style.display = "flex";
+}
+
+function closeNewCategoryPopup() {
+    document.querySelector("#new-category-popup").style.display = "none";
+}
+
+// 📌 새로운 카테고리 추가 후 파일 저장 실행
+function saveNewCategory() {
+    let categoryName = document.getElementById("new-category-input").value.trim();
+
+    if (!categoryName) {
+        alert("카테고리 이름을 입력하세요!");
         return;
     }
 
-    let fileList = document.querySelector("#file-list");
-    let noFilesMessage = document.querySelector(".no-files");
+    // 새로운 카테고리 버튼 생성
+        let newButton = document.createElement("button");
+        newButton.className = "category-btn";
+        newButton.textContent = categoryName;
 
-    // 기본 "저장된 파일이 없습니다." 메시지 제거
-    if (noFilesMessage) {
-        fileList.removeChild(noFilesMessage);
-    }
+        // ✅ 새로운 버튼 클릭 시 카테고리를 저장하고 팝업을 닫도록 이벤트 리스너 추가
+        newButton.addEventListener("click", function () {
+            selectCategory(categoryName);  // 카테고리 저장 함수 호출
+        });
 
-    // 새 파일 목록 아이템 생성 (입력한 코드 포함)
-    let newFile = document.createElement("li");
-    newFile.classList.add("file-item");
-    newFile.textContent = `${code} / ${fileName}`;
+        // 기존 팝업의 카테고리 리스트에 추가
+        let categoryList = document.querySelector("#category-popup .category-list");
+        if (categoryList) {
+            categoryList.appendChild(newButton);
+        } else {
+            console.error("❌ 카테고리 목록을 찾을 수 없습니다!");
+        }
 
-    // 최신 파일이 위로 쌓이도록 `insertBefore()` 적용
-    fileList.insertBefore(newFile, fileList.firstChild);
-
-    // 🔹 코드 입력란 & 파일명 입력란 초기화 및 포커스 이동
-    codeInput.value = "";
-    fileNameInput.value = "";
-    codeInput.focus();
-
-    // 팝업 닫기
-    closePopup();
+        // 입력 필드 초기화 및 팝업 닫기 (기존 팝업 유지)
+        document.getElementById("new-category-input").value = "";
+        closeNewCategoryPopup();
 }
+
+// 📌 파일 저장 함수 (카테고리 선택 후 실행됨)
+function saveFile() {
+    let codeInput = sessionStorage.getItem("code");
+    let fileName = sessionStorage.getItem("fileName");
+    let category = sessionStorage.getItem("selectedCategory");
+
+    console.log("🔍 저장할 데이터 - 코드:", codeInput, "파일 이름:", fileName, "카테고리:", category); // 디버깅 로그 추가
+
+    if (!codeInput) {
+        alert("코드를 입력하세요!");
+        return;
+    }
+    if (!fileName || fileName.trim() === "") {
+            alert("코드 이름을 입력하세요!");
+            openFileNamePopup(); // 파일 이름 팝업 다시 열기
+            return;
+        }
+        if (!category) {
+            alert("카테고리를 선택하세요!");
+            openCategoryPopup(); // 카테고리 선택 팝업 다시 열기
+            return;
+        }
+
+    let fileList = document.getElementById("file-list");
+
+        if (!fileList) {
+            console.error("❌ 파일 리스트 요소를 찾을 수 없습니다! HTML 구조를 확인하세요.");
+            return;
+        }
+
+        let noFilesMessage = document.querySelector(".no-files");
+
+        // 기본 "저장된 파일이 없습니다." 메시지 제거
+        if (noFilesMessage) {
+            fileList.removeChild(noFilesMessage);
+        }
+
+        // 새 파일 목록 아이템 생성 (카테고리 포함)
+        let newFile = document.createElement("li");
+        newFile.classList.add("file-item");
+        newFile.textContent = `📁 ${codeInput} / ${fileName} (${category})`;
+
+        // 최신 파일이 위로 쌓이도록 `insertBefore()` 적용
+        fileList.insertBefore(newFile, fileList.firstChild);
+
+        // 입력 필드 초기화
+            document.getElementById("code-input").value = "";
+            sessionStorage.removeItem("code");
+            sessionStorage.removeItem("fileName");
+            sessionStorage.removeItem("selectedCategory");
+
+        console.log("✅ 파일 저장 완료! 사이드바 업데이트됨.");
+}
+
+// 📌 기존 카테고리 버튼 클릭 이벤트 리스너 추가
+document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(() => {
+        let categoryButtons = document.querySelectorAll(".category-btn");
+
+        if (categoryButtons.length > 0) {
+            categoryButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    let selectedCategory = this.textContent.trim();
+                    selectCategory(selectedCategory);
+                });
+            });
+            console.log("✅ 카테고리 버튼 클릭 이벤트 정상 등록 완료");
+        } else {
+            console.error("⚠️ 카테고리 버튼을 찾을 수 없습니다!");
+        }
+    }, 500);
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(() => {
+        let newCategoryButton = document.querySelector(".new-category");
+
+        if (newCategoryButton) {
+            newCategoryButton.addEventListener("click", function () {
+                openNewCategoryPopup();
+            });
+            console.log("✅ 새로운 카테고리 추가 버튼 이벤트 리스너 정상 등록 완료");
+        } else {
+            console.error("❌ 새로운 카테고리 추가 버튼을 찾을 수 없습니다! HTML 구조를 확인하세요.");
+        }
+    }, 1000);  // 1초 후 실행
+});
+
 
 // 📌 파일 선택 팝업 열기 (원본 PDF / 요약 PDF 선택)
 function openPdfPopup(fileName) {
@@ -219,14 +420,6 @@ function downloadPdf() {
     window.open(pdfUrl, "_blank");
 }
 
-function downloadPdf() {
-    document.getElementById("category-popup").style.display = "flex";
-}
-
-function closeCategoryPopup() {
-    document.getElementById("category-popup").style.display = "none";
-}
-
 document.addEventListener("DOMContentLoaded", function () {
     setTimeout(() => {
         let closeButton = document.querySelector("#category-popup .close-btn");
@@ -254,73 +447,9 @@ function closeNewCategoryPopup() {
     document.getElementById("new-category-popup").style.display = "none";
 }
 
-// ✅ 새로운 카테고리를 기존 팝업에 추가하는 함수
-function saveNewCategory() {
-    let categoryName = document.getElementById("new-category-input").value.trim();
-
-    if (!categoryName) {
-        alert("카테고리 이름을 입력하세요!");
-        return;
-    }
-
-    // 새로운 카테고리 버튼 생성
-    let newButton = document.createElement("button");
-    newButton.className = "category-btn";
-    newButton.textContent = categoryName;
-
-    // ✅ 새로운 버튼 클릭 시 파일명 입력 팝업이 열리도록 이벤트 리스너 추가
-        newButton.addEventListener("click", function () {
-            document.getElementById("file-name-popup").style.display = "flex";
-        });
-
-    // 기존 팝업의 카테고리 리스트에 추가
-    let categoryList = document.querySelector("#category-popup .category-list");
-    categoryList.appendChild(newButton);
-
-    // 입력 필드 초기화 및 팝업 닫기 (기존 팝업은 유지)
-    document.getElementById("new-category-input").value = "";
-    closeNewCategoryPopup();
-}
-
 // 📌 PDF 뷰어 페이지 로드 시 PDF 표시
 if (window.location.pathname.includes("pdf_viewer.html")) {
     document.addEventListener("DOMContentLoaded", loadPdfViewer);
-}
-
-// 📌 카테고리 선택 시 파일 이름 입력 팝업 열기
-document.querySelectorAll(".category-btn").forEach(button => {
-    button.addEventListener("click", function () {
-        document.getElementById("file-name-popup").style.display = "flex";
-    });
-});
-
-// 📌 파일 이름 팝업 닫기
-function closeFileNamePopup() {
-    document.getElementById("file-name-popup").style.display = "none";
-}
-
-// 📌 파일 이름 저장
-function saveFileName() {
-    let fileName = document.getElementById("file-name-input").value.trim();
-
-    if (!fileName) {
-        alert("파일 이름을 입력하세요!");
-        return;
-    }
-
-    // 🔹 선택한 카테고리 정보를 함께 저장 (sessionStorage 활용)
-    let selectedCategory = sessionStorage.getItem("selectedCategory") || "기본 카테고리";
-
-    // 🔹 리스트에 추가 (예제: 저장된 목록을 업데이트할 수 있도록)
-    let fileList = document.getElementById("file-list");
-    let newItem = document.createElement("li");
-    newItem.textContent = `📁 ${fileName} (${selectedCategory})`;
-
-    fileList.appendChild(newItem);
-
-    // 입력 필드 초기화 및 팝업 닫기
-    document.getElementById("file-name-input").value = "";
-    closeFileNamePopup();
 }
 
 // 📌 관리자 여부 확인 (특정 코드 입력 시 관리자 권한 활성화)

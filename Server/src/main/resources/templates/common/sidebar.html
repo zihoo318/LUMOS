@@ -1,3 +1,6 @@
+<head>
+    <meta charset="UTF-8">
+</head>
 <div id="sidebar">
     <div class="header">
         <img src="/static/images/logo.png" alt="LUMOS Logo">
@@ -20,15 +23,51 @@
     <!-- <button id="edit-button" class="edit-button;">수정하기</button> -->
 </div>
 
-<!-- 팝업창 (파일 이름 입력) -->
+<!-- 팝업창 (코드 이름 입력) -->
 <div id="file-popup" class="popup-overlay">
     <div class="file_name-popup-content">
         <!-- 닫기 버튼 (X 아이콘) -->
-        <button class="close-popup" onclick="closePopup()">✖</button>
+        <button class="close-popup" onclick="closeFileNamePopup()">✖</button>
 
-        <h2>파일 이름 설정</h2>
-        <input type="text" id="file-name-input" placeholder="파일 이름을 입력하세요">
+        <h2>코드 이름 설정</h2>
+        <input type="text" id="file-name-input" placeholder="코드 이름을 입력하세요">
         <button id="save-button">저장</button>
+    </div>
+</div>
+
+<!-- 코드 이름 저장 시 카테고리 설정 팝업 -->
+<div id="category-popup" class="popup-overlay" style="display: none;">
+    <div class="popup-box">
+        <!-- ✅ X 버튼이 사라지지 않도록 강제 추가 -->
+        <span class="close-btn" onclick="closeCategoryPopup()">&times;</span>
+
+        <p class="popup-title">
+            <span class="info-icon">&#9432;</span> 어떤 카테고리에 넣을까요?
+        </p>
+        <div class="category-list-container">
+            <div class="category-list">
+                <button class="category-btn">데이터베이스</button>
+                <button class="category-btn">데이터마이닝</button>
+                <button class="category-btn">자료구조</button>
+                <button class="category-btn">알고리즘</button>
+            </div>
+        </div>
+        <span class="new-category">+ 새로운 카테고리</span>
+    </div>
+</div>
+
+<!-- 새로운 카테고리 입력 팝업 -->
+<div id="new-category-popup" class="new-category-popup-overlay" style="display: none;">
+    <div class="new-category-popup-box">
+        <span class="new-category-close-btn" onclick="closeNewCategoryPopup()">&times;</span>
+
+        <!-- 가로 정렬을 위한 flex 컨테이너 -->
+        <div class="new-category-input-container">
+            <label for="new-category-input">카테고리</label>
+            <input type="text" id="new-category-input" placeholder="카테고리 입력">
+        </div>
+
+        <button class="new-category-save-button" onclick="saveNewCategory()">저장</button>
     </div>
 </div>
 
@@ -44,3 +83,291 @@
         <button class="pdf-option-button" onclick="viewPdf('summary')">요약 PDF</button>
     </div>
 </div>
+
+<style>
+    #category-popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%; /*숫자 클수록 팝업 오른쪽으로 감*/
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1100; /* 파일 이름 팝업보다 위 */
+    }
+
+    .popup-box {
+        position: relative;
+        background: white;
+        padding: 20px;
+        border: 5px solid #9BAEF6;
+        border-radius: 60px;
+        width: 300px;
+        text-align: center;
+    }
+
+    .popup-title {
+        color: #232072;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .info-icon {
+        color: #232072;
+        margin-right: 5px;
+    }
+
+    /* 🔹 카테고리 목록을 감싸는 컨테이너 설정 */
+    .category-list-container {
+        max-height: 200px; /* 최대 높이 설정 */
+        overflow-y: auto; /* 내용이 넘칠 경우 스크롤 생성 */
+        border: 2px solid #9BAEF6;
+        border-radius: 20px;
+        padding: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* 🔹 스크롤바 디자인 */
+    .category-list-container::-webkit-scrollbar {
+        width: 6px; /* 스크롤바 너비 */
+    }
+
+    .category-list-container::-webkit-scrollbar-thumb {
+        background: #567AF9; /* 스크롤바 색상 */
+        border-radius: 10px;
+    }
+
+    .category-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .category-btn {
+        width: 200px;
+        background: rgba(125, 150, 243, 0.4);
+        border: 2px solid #567AF9;
+        border-radius: 40px;
+        color: #232072;
+        font-weight: bold;
+        padding: 10px;
+        margin-left: 37px;
+        cursor: pointer;
+    }
+
+    .category-btn:hover {
+        background: rgba(125, 150, 243, 0.6);
+    }
+
+    .new-category {
+        display: block;
+        color: #232072;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .new-category:hover {
+        text-decoration: underline;
+    }
+
+    .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    font-weight: bold;
+    color: #232072; /* 🔹 X 버튼 색상 */
+    cursor: pointer;
+    display: block;
+    }
+
+    .close-btn:hover {
+    color: #567AF9; /* 🔹 X 버튼 호버 효과 */
+    }
+
+   /* 📌 입력 필드와 라벨을 가로로 정렬하는 컨테이너 */
+.new-category-input-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* 라벨과 입력 필드 사이 간격 */
+    margin-bottom: 15px;
+}
+
+/* 📌 카테고리 라벨 */
+.new-category-input-container label {
+    font-size: 18px;
+    color: #404040;
+    font-weight: bold;
+    margin-top: 25px;
+}
+
+/* 📌 입력 필드 */
+#new-category-input {
+    width: 60%;
+    padding: 10px;
+    border: 2px solid #567AF9;
+    border-radius: 30px;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 25px;
+}
+
+
+  /* 🔹 저장 버튼 */
+  .new-category-save-button {
+      padding: 7px 15px;
+      width: 100px;
+      background-color: rgba(125, 150, 243, 0.4); /* 40% */
+      color: #404040; /* 텍스트 색상 */
+      font-weight: bold;
+      border: 2px solid #567AF9; /* 테두리 */
+      border-radius: 50px; /* Corner radius */
+      cursor: pointer;
+      font-size: 16px;
+      margin-left: 100px;
+      margin-top: 10px;
+  }
+
+  .new-category-save-button:hover {
+      background-color: rgba(125, 150, 243, 0.6);
+  }
+
+  /* 📌 새로운 카테고리 추가 팝업 */
+    #new-category-popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%; /*숫자 클수록 팝업 오른쪽으로 감*/
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+         isplay: none; /* 기본적으로 숨김 */
+        z-index: 1101; /* 기존 카테고리 팝업보다 위 */
+    }
+
+    .new-category-popup-box {
+        position: relative;
+        background: white;
+        padding: 20px;
+        border: 5px solid #9BAEF6;
+        border-radius: 60px;
+        width: 300px;
+        height: 150px;
+        text-align: center;
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* 내용 가운데 정렬 */
+    }
+
+    .new-category-popup-title {
+        color: #232072;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .new-category-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    font-weight: bold;
+    color: #232072; /* 🔹 X 버튼 색상 */
+    cursor: pointer;
+    display: block;
+    }
+
+    .new-category-close-btn:hover {
+    color: #567AF9; /* 🔹 X 버튼 호버 효과 */
+    }
+</style>
+
+<!-- config.js 불러오기 -->
+<script src="/static/config.js"></script>
+<script>
+    function submitCode() {
+        const code = document.getElementById("code-input").value;
+        const username = localStorage.getItem("username");
+
+        if (!code) {
+            alert("코드를 입력하세요.");
+            return;
+        }
+
+        fetch(API_BASE_URL + "/api/registerCode", {  // config.js에서 API URL 가져오기
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ username, code })  // POST 요청 데이터
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("등록 실패");
+            }
+            return response.text();  // 서버에서 Register ID 반환
+        })
+        .then(data => {
+            alert("등록 성공: " + data);
+            console.log("Register ID:", data);
+
+            // 파일 이름 설정 팝업 표시 (사용자가 별명을 설정할 수 있도록)
+            openFilePopup(data.split(": ")[1]); // Register ID 전달
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("코드 등록에 실패했습니다.");
+        });
+    }
+
+    function openFilePopup(registerId) {
+        document.getElementById("file-popup").style.display = "block";
+        document.getElementById("save-button").onclick = function() {
+            saveCodeName(registerId);
+        };
+    }
+
+    function saveCodeName(registerId) {
+        const codeName = document.getElementById("file-name-input").value;
+
+        if (!codeName) {
+            alert("파일 이름을 입력하세요.");
+            return;
+        }
+
+        fetch("API_BASE_URL + "/api/setCodeName", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ registerId, codeName })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("별명 설정 실패");
+            }
+            return response.text();
+        })
+        .then(data => {
+            alert("별명 설정 완료: " + data);
+            document.getElementById("file-popup").style.display = "none";
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("별명 설정에 실패했습니다.");
+        });
+    }
+
+    function closePopup() {
+        document.getElementById("file-popup").style.display = "none";
+    }
+</script>
