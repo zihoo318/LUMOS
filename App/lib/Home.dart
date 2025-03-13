@@ -364,13 +364,15 @@ class _CategoryViewState extends State<CategoryView> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
+                      //print("367줄 snapshot.hasError: ${snapshot.error}");
                       return Center(child: Text("Error: ${snapshot.error}"));
                     } else if (snapshot.hasData) {
                       Map<String, List<Map<int, String>>> categoryData = snapshot.data!;
+                      //print("370줄 categoryData: $categoryData");
                       _categoryFiles = categoryData;
                       _categories = categoryData.keys.toList();
 
-                      print("_categoryFiles: $_categoryFiles");
+                      //print("374줄 _categoryFiles: $_categoryFiles");
 
                       return Column(
                         children: _categories.expand((category) => [
@@ -448,16 +450,19 @@ class _CategoryViewState extends State<CategoryView> {
         ),
         SizedBox(height: 10),
         // 카테고리별로 파일 버튼을 생성
-        ...filesList.expand((files) => files.entries.map((file) => _buildFileItem(context, file))).toList(),
+        ...filesList.expand((fileMap) {
+          return fileMap.entries.map((file) => _buildFileItem(context, file));
+        }).toList(),
       ],
     );
   }
 
+
   Widget _buildFileItem(BuildContext context, MapEntry<int, String> file) {
-    // codeId와 codeName을 전달하는 버튼을 만들기
+    // codeName을 전달하는 버튼을 만들기
     return GestureDetector(
       onTap: () {
-        // 버튼 클릭 시 PdfTransformScreen으로 codeId와 codeName을 전달
+        // 버튼 클릭 시 PdfTransformScreen으로 codeName을 전달
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -468,23 +473,17 @@ class _CategoryViewState extends State<CategoryView> {
         );
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 40),
-        child: Row(
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                // 버튼 클릭 시 실행되는 동작 (위와 동일)
-              },
-              child: Text(
-                file.value, // 버튼에 표시될 코드 이름
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
+        padding: EdgeInsets.symmetric(vertical: 7),
+        child: Text(
+          file.value,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          textAlign: TextAlign.center,
         ),
       ),
     );
   }
-
-
 }

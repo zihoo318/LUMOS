@@ -259,6 +259,8 @@ class Api {
     try {
       // GET 요청 보내기
       final response = await http.get(Uri.parse(url));
+      print("Status Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
 
       if (response.statusCode == 200) {
         // 요청이 성공하면 JSON 파싱
@@ -268,29 +270,32 @@ class Api {
         Map<String, List<Map<int, String>>> result = {};
 
         data.forEach((categoryName, codes) {
-          // categoryName : [{codeId: codeName}, ... , {codeId: codeName}] 형태로 변환
+          // codes는 Map 형태이므로, Map에서 key-value를 List<Map<int, String>> 형태로 변환
           List<Map<int, String>> codeMap = [];
 
-          for (var entry in codes) {
-            int codeId = int.parse(entry['codeId'].toString());
-            String codeName = entry['codeName'];  // codeName은 String
+          // codes가 Map이므로 Map의 키와 값으로 반복
+          codes.forEach((key, value) {
+            int codeId = int.parse(key);  // key는 String이므로 int로 변환
+            String codeName = value;  // value는 String
 
-            // List에 Map을 추가하는 방식으로 변경
-            codeMap.add({codeId: codeName});  // codeId를 키로, codeName을 값으로 추가
-          }
+            // List에 Map을 추가
+            codeMap.add({codeId: codeName});
+          });
 
           result[categoryName] = codeMap;  // 최종 Map에 저장
+          print("Api.fetchUserCategoryCodes의 결과 : $result");
         });
 
         return result;
       } else {
+        print("Api.fetchUserCategoryCodes get요청 실패");
         throw Exception('Failed to load data');
       }
     } catch (e) {
+      print("Api.fetchUserCategoryCodes catch문 : $e");
       throw Exception('Error: $e');
     }
   }
-
 
   // 날짜별 파일 목록 조회 API 추가
   static Future<List<String>> getFilesByDate(String date, String userName) async {
