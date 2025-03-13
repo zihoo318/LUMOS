@@ -1,2 +1,0 @@
-C:/Users/KJH/LUMOS/App/android/app/.cxx/RelWithDebInfo/5e3l515u/x86/CMakeFiles/edit_cache.dir
-C:/Users/KJH/LUMOS/App/android/app/.cxx/RelWithDebInfo/5e3l515u/x86/CMakeFiles/rebuild_cache.dir
