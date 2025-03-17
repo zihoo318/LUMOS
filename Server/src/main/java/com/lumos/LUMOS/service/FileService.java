@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 @Service
 public class FileService {
 
-    private static final String FILE_DIRECTORY = "C:/LUMOS/test_db";
+    private static final String FILE_DIRECTORY = "C:/Users/KJH/LUMOS/test_db";
 
     // 파일을 Resource 형태로 로드 (다운로드 기능)
     public Resource loadFileAsResource(String fileName) throws IOException {

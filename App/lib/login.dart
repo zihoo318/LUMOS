@@ -48,6 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
     if (response.containsKey('username')) {  // 로그인 성공
       print('로그인 성공: ${response['username']}');
 
+      // 기존 SharedPreferences 데이터 초기화
+      await SharedPreferencesManager.clearAll();
+
       // 사용자 이름 저장
       await SharedPreferencesManager.saveUserName(response['username']);
 

@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/codeRegistration")
 public class CodeRegistrationController {
 
     @Autowired
@@ -87,5 +87,10 @@ public class CodeRegistrationController {
         return ResponseEntity.ok(categories);
     }
 
+    // 등록된 최신 5개 코드 반환
+    @GetMapping("/recent/{username}")
+    public List<Map<String, String>> getRecentRegisters(@PathVariable String username) {
+        return registerService.getRecentRegisters(username);
+    }
 
 }
