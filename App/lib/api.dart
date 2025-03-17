@@ -1,8 +1,11 @@
 // lib/api.dart
+library api;
+
 
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'SharedPreferencesManager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,7 +15,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class Api {
   // 공통 API URL 설정
 
-  static const String baseUrl = "http://192.168.219.106:8080/api";
+  static const String baseUrl = "http://192.168.219.104:8080/api";
 
   // 로그인 API
   static Future<Map<String, dynamic>> login(String username, String password, String fcmToken) async {
@@ -69,6 +72,41 @@ class Api {
       return {'success': false, 'error': '네트워크 오류가 발생했습니다. 다시 시도해주세요.'};
     }
   }
+
+
+
+  // 로그아웃 (토큰 삭제)
+ static Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    await prefs.remove('username');
+  }
+
+
+  static Future<Map<String, dynamic>> deleteAccount() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+/*    if (token == null) {
+      return {'success': false, 'error': '로그인이 필요합니다.'};
+    }*/
+
+    final response = await http.delete(
+      Uri.parse('https://your-api-url.com/users/delete'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      await prefs.clear(); // ✅ 회원 정보 캐시 삭제
+      return {'success': true};
+    } else {
+      return {'success': false, 'error': json.decode(response.body)['error'] ?? '회원탈퇴 실패'};
+    }
+  }
+
 
   // 코드 등록하기 api
   static Future<Map<String, dynamic>> registerCode(String code) async {
