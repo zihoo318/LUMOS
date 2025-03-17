@@ -423,4 +423,38 @@ class Api {
       print("❌ 다운로드 등록 오류: $e");
     }
   }
+
+  /*// ✅ 최근 기록 조회 API 추가
+  static Future<List<Map<String, String>>> getRecentRecords() async {
+    try {
+      // SharedPreferences에서 userName 가져오기
+      String? userName = await SharedPreferencesManager.getUserName();
+
+      if (userName == null) {
+        throw Exception('User name is not found. 로그인을 먼저 해주세요.');
+      }
+
+      // API 요청
+      final response = await http.get(
+        Uri.parse('$baseUrl/recent-codes?username=$userName'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+
+        return data.map((item) {
+          return {
+            "code": item["code"].toString(),  // ✅ String 변환
+            "userDefinedName": item["userDefinedName"].toString(),  // ✅ String 변환
+          };
+        }).toList();
+      } else {
+        throw Exception('최근 기록을 불러오는 데 실패했습니다.');
+      }
+    } catch (e) {
+      print("최근 기록 조회 실패: $e");
+      return [];
+    }
+  }*/
 }
