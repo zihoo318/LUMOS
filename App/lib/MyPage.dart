@@ -113,58 +113,47 @@ class _MyPageState extends State<MyPage> {
         ],
       ),
       // 네비게이션 바
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.6), // 투명도 60% 적용
-        ),
-        child: BottomNavigationBar(
-          backgroundColor: Colors.transparent, // 바탕 자체는 투명
-          selectedItemColor: Color(0xFF020142), // 선택된 아이콘 남색
-          unselectedItemColor: Colors.grey, // 비활성 아이콘 회색
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
 
-            // 선택한 탭에 맞는 페이지로 이동
-            switch (index) {
-              case 0:
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => CodeInputScreen()),
-                );
-                break;
-              case 1:
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
-                );
-                break;
-              case 2:
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyPage()), // 현재 페이지
-                );
-                break;
-            }
-          },
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle),
-              label: '코드추가',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: '홈',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: '마이페이지',
-            ),
-          ],
-        ),
-      ),
+  Widget _buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      backgroundColor: Colors.white, // 완전히 불투명한 흰색
+      selectedItemColor: Color(0xFF020142),
+      unselectedItemColor: Colors.grey,
+      currentIndex: _currentIndex,
+      onTap: (index) {
+        setState(() {
+          _currentIndex = index;
+        });
+
+        switch (index) {
+          case 0:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => CodeInputScreen()),
+            );
+            break;
+          case 1:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => Home()),
+            );
+            break;
+          case 2:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MyPage()),
+            );
+            break;
+        }
+      },
+      items: [
+        BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: '코드추가'),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이페이지'),
+      ],
     );
   }
 
