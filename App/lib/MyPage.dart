@@ -1,6 +1,9 @@
 // PdfTransformScreen에서 선택한 파일명을 활용할 수 있도록 selectedPdf 매개변수를 전달하도록 설정했음
 
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'home.dart'; // Home 화면 import
 import 'codeplus.dart';
 import 'pdftransform.dart'; // PdfTransformScreen 추가
@@ -12,6 +15,31 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
   int _currentIndex = 2; // '마이페이지'가 기본 선택됨
+  late Future<List<Map<String, String>>> _recentRecords; // 최근 기록 목록
+
+  @override
+  void initState() {
+    super.initState();
+    _recentRecords = fetchRecentRecords(); // 최근 기록 데이터 가져오기
+  }
+
+  // 최근 등록한 코드 목록을 API에서 불러오기
+  Future<List<Map<String, String>>> fetchRecentRecords() async {
+    final response = await http.get(Uri.parse('https://your-api.com/recent-codes'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+
+      return data.map((item) {
+        return {
+          "code": item["code"].toString(), // ✅ 명시적으로 String 변환
+          "userDefinedName": item["userDefinedName"].toString(), // ✅ 명시적으로 String 변환
+        };
+      }).toList();
+    } else {
+      throw Exception('최근 기록을 불러오는 데 실패했습니다.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,19 +97,31 @@ class _MyPageState extends State<MyPage> {
                   ),
                   SizedBox(height: 20), // 최근 기록 텍스트와 리스트 사이 여백
 
-                  // 최근 기록 리스트 (왼쪽 간격 조정)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 70), // 왼쪽 간격 조정
-                    child: Column(
-                      children: [
-                        _buildRecentRecord("CS101-ABCD"),
-                        _buildRecentRecord("DB103-AEHS"),
-                        _buildRecentRecord("CR302-PAFS"),
-                        _buildRecentRecord("CR302-BDFE"),
-                      ],
-                    ),
+                  // API 데이터를 불러오는 FutureBuilder
+                  FutureBuilder<List<Map<String, String>>>(
+                    future: _recentRecords,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator()); // 로딩 중
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text("데이터를 불러오는 중 오류 발생"));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Center(child: Text("최근 등록된 코드가 없습니다."));
+                      }
+
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 70),
+                        child: Column(
+                          children: snapshot.data!.map((record) {
+                            return _buildRecentRecord(record["code"]!, record["userDefinedName"]!);
+                          }).toList(),
+                        ),
+                      );
+                    },
                   ),
+
                   SizedBox(height: 30),
+
                   Padding(
                     padding: const EdgeInsets.only(left: 15),
                     child: Text(
@@ -90,6 +130,7 @@ class _MyPageState extends State<MyPage> {
                     ),
                   ),
                   SizedBox(height: 20),
+
                   Padding(
                     padding: const EdgeInsets.only(left: 75),
                     child: Column(
@@ -157,13 +198,13 @@ class _MyPageState extends State<MyPage> {
     );
   }
 
-  Widget _buildRecentRecord(String title) {
+  Widget _buildRecentRecord(String code, String userDefinedName) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PdfTransformScreen(codeName: title), // 수정된 부분
+            builder: (context) => PdfTransformScreen(codeName: code), // 수정된 부분
           ),
         );
       },
@@ -172,7 +213,7 @@ class _MyPageState extends State<MyPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: TextStyle(fontSize: 18)),
+            Text("$code / $userDefinedName", style: TextStyle(fontSize: 18)),
             SizedBox(height: 3),
             Align(
               alignment: Alignment.centerLeft,
