@@ -3,6 +3,21 @@ import 'package:flutter/services.dart';
 
 import 'api.dart'; // 클립보드 복사 기능 추가
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Flutter 엔진 초기화
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: PdfTransformScreen(codeName: '데이터베이스 1주차',),
+    );
+  }
+}
+
 class PdfTransformScreen extends StatefulWidget {
   final String codeName; // codeName을 받는 변수
 
@@ -17,6 +32,29 @@ class _PdfTransformScreenState extends State<PdfTransformScreen> {
 
   TextEditingController textBoxController = TextEditingController(); // 텍스트 박스 컨트롤러
   String selectedPdf = "원본 PDF"; // 기본 선택값을 원본 PDF로 설정
+  String fileContent = "텍스트 로드 중..."; // 초기 텍스트
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFileText(); // 초기 로딩
+  }
+
+  // 파일 내용을 가져오는 함수
+  void _loadFileText() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    String fileName = selectedPdf == "원본 PDF" ? "test_original_txt.txt" : "test_summary_txt.txt";
+    String? content = await Api.fetchFileText(fileName);
+
+    setState(() {
+      fileContent = content ?? "파일을 불러올 수 없습니다.";
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +96,7 @@ class _PdfTransformScreenState extends State<PdfTransformScreen> {
                       onPressed: () {
                         setState(() {
                           selectedPdf = "원본 PDF";
+                          _loadFileText(); // 원본 텍스트 로드
                         });
                       },
                       style: ElevatedButton.styleFrom(
@@ -77,6 +116,7 @@ class _PdfTransformScreenState extends State<PdfTransformScreen> {
                       onPressed: () {
                         setState(() {
                           selectedPdf = "요약 PDF";
+                          _loadFileText(); // 요약 텍스트 로드
                         });
                       },
                       style: ElevatedButton.styleFrom(
@@ -102,9 +142,14 @@ class _PdfTransformScreenState extends State<PdfTransformScreen> {
                     color: Colors.white.withOpacity(0.8),
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  child: selectedPdf == "원본 PDF"
-                      ? Image.asset('assets/original_pdf.png', fit: BoxFit.cover)
-                      : Image.asset('assets/summary_pdf.png', fit: BoxFit.cover),
+                  child: isLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : SingleChildScrollView(
+                    child: SelectableText(
+                      fileContent,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
                 ),
                 SizedBox(height: 20),
                 Row(
@@ -112,16 +157,30 @@ class _PdfTransformScreenState extends State<PdfTransformScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Clipboard.setData(ClipboardData(text: textBoxController.text));
+                        Clipboard.setData(ClipboardData(text: fileContent));
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("텍스트가 복사되었습니다!")),
+                          SnackBar(
+                            content: Row(
+                              children: [
+                                Icon(Icons.check, color: Colors.white),
+                                SizedBox(width: 10),
+                                Expanded(child: Text("전체 복사가 완료되었습니다!")),
+                              ],
+                            ),
+                          ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFFFFE786),
                         minimumSize: Size(140, 50),
                       ),
-                      child: Text("전체복사", style: TextStyle(color: Color(0xFF404040))),
+                      child: Row(
+                        children: [
+                          Icon(Icons.copy, color: Color(0xFF404040)),
+                          SizedBox(width: 5),
+                          Text("전체복사", style: TextStyle(color: Color(0xFF404040))),
+                        ],
+                      ),
                     ),
                     SizedBox(width: 35),
                     ElevatedButton(

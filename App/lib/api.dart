@@ -383,7 +383,7 @@ class Api {
     return false;
   }
 
-  // 📌 📢 다운로드 완료 알림 표시
+  // 다운로드 완료 알림 표시
   static Future<void> _showDownloadNotification(String filePath, String fileName) async {
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -415,7 +415,7 @@ class Api {
     );
   }
 
-  // 📌 🛠️ 시스템에 다운로드 파일 등록 (내 파일 앱에서 보이게)
+  // 시스템에 다운로드 파일 등록 (내 파일 앱에서 보이게)
   static Future<void> _registerDownload(String filePath) async {
     try {
       File file = File(filePath);
@@ -426,6 +426,21 @@ class Api {
       }
     } catch (e) {
       print("❌ 다운로드 등록 오류: $e");
+    }
+  }
+
+  // 텍스트 파일 가져오기 API 추가
+  static Future<String?> fetchFileText(String fileName) async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/files/text/$fileName'));
+
+      if (response.statusCode == 200) {
+        return utf8.decode(response.bodyBytes); // UTF-8 디코딩
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
     }
   }
 
