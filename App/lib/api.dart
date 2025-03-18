@@ -12,7 +12,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class Api {
   // 공통 API URL 설정
 
-  static const String baseUrl = "http://172.30.1.35:8080/api";
+  static const String baseUrl = "http://223.194.136.124:8080/api";
 
   // 로그인 API
   static Future<Map<String, dynamic>> login(String username, String password, String fcmToken) async {
