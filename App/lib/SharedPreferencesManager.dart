@@ -2,6 +2,12 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesManager {
+  // 로그인 할 때 미리 한번 지우고 저장 시작
+  static Future<void> clearAll() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();  // 모든 데이터 삭제
+  }
+
   // registerId 저장
   static Future<void> saveRegisterId(String registerId) async {
     final prefs = await SharedPreferences.getInstance();

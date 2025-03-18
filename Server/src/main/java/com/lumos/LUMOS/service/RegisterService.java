@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -65,5 +67,13 @@ public class RegisterService {
             throw new IllegalArgumentException("유저 이름이 제공되지 않았습니다.");
         }
         return registerRepository.findCodeNamesByDate(date, userName);
+    }
+
+    // 등록된 최근 5개 코드 찾기
+    public List<Map<String, String>> getRecentRegisters(String username) {
+        List<Register> registers = registerRepository.findTop5ByUsernameOrderByRegisterDateDesc(username);
+        return registers.stream()
+                .map(r -> Map.of(r.getCode().getCode(), r.getCodeName()))
+                .collect(Collectors.toList());
     }
 }

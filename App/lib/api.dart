@@ -12,7 +12,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class Api {
   // 공통 API URL 설정
 
-  static const String baseUrl = "http://172.17.6.63:8080/api";
+  static const String baseUrl = "http://223.194.136.124:8080/api";
 
   // 로그인 API
   static Future<Map<String, dynamic>> login(String username, String password, String fcmToken) async {
@@ -82,7 +82,7 @@ class Api {
       }
 
       final response = await http.post(
-        Uri.parse('$baseUrl/registerCode?username=$userName&code=$code'),
+        Uri.parse('$baseUrl/codeRegistration/registerCode?username=$userName&code=$code'),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -121,7 +121,7 @@ class Api {
 
       // URL 파라미터로 값 전달
       final response = await http.post(
-        Uri.parse('$baseUrl/setCodeName?registerId=$registerId&codeName=$codeName'),
+        Uri.parse('$baseUrl/codeRegistration/setCodeName?registerId=$registerId&codeName=$codeName'),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -174,7 +174,7 @@ class Api {
   // 카테고리 이름 가져오기
   Future<List<Map<String, dynamic>>> getCategoriesByUsername(String username) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/list?username=$username'),
+      Uri.parse('$baseUrl/codeRegistration/list?username=$username'),
     );
 
     if (response.statusCode == 200) {
@@ -266,24 +266,29 @@ class Api {
         // 요청이 성공하면 JSON 파싱
         final Map<String, dynamic> data = json.decode(response.body);
 
+        // 빈 맵이면 그대로 반환
+        if (data.isEmpty) {
+          print("Api.fetchUserCategoryCodes: 서버에서 빈 맵을 반환함.");
+          return {};
+        }
+
         // 파싱된 데이터를 Map 형태로 변환
         Map<String, List<Map<int, String>>> result = {};
 
         data.forEach((categoryName, codes) {
-          // codes는 Map 형태이므로, Map에서 key-value를 List<Map<int, String>> 형태로 변환
           List<Map<int, String>> codeMap = [];
 
-          // codes가 Map이므로 Map의 키와 값으로 반복
-          codes.forEach((key, value) {
-            int codeId = int.parse(key);  // key는 String이므로 int로 변환
-            String codeName = value;  // value는 String
+          // codes는 List<Map<String, String>> 형식이므로, 개별 요소에 접근
+          for (var codeEntry in codes) {
+            codeEntry.forEach((key, value) {
+              int codeId = int.parse(key);
+              String codeName = value;
+              codeMap.add({codeId: codeName});
+            });
+          }
 
-            // List에 Map을 추가
-            codeMap.add({codeId: codeName});
-          });
-
-          result[categoryName] = codeMap;  // 최종 Map에 저장
-          print("Api.fetchUserCategoryCodes의 결과 : $result");
+          result[categoryName] = codeMap;
+          print("Api.fetchUserCategoryCodes의 결과 : \$result");
         });
 
         return result;
@@ -438,4 +443,52 @@ class Api {
       return null;
     }
   }
+
+  // 회원 탈퇴
+  static Future<String> deleteUser(String username) async {
+    final Uri url = Uri.parse("$baseUrl/delete?username=$username");
+
+    try {
+      final response = await http.delete(url);
+
+      if (response.statusCode == 200) {
+        return "회원 탈퇴 완료";
+      } else if (response.statusCode == 404) {
+        return "사용자를 찾을 수 없습니다.";
+      } else {
+        return "회원 탈퇴 실패: ${response.body}";
+      }
+    } catch (e) {
+      return "오류 발생: $e";
+    }
+  }
+
+  // 등록된 최신 코드 5개
+  Future<List<Map<String, String>>?> getRecentRegisters() async {
+    try {
+      // SharedPreferences에서 userName 가져오기
+      String? userName = await SharedPreferencesManager.getUserName();
+
+      if (userName == null) {
+        throw Exception('User name is not found. 로그인을 먼저 해주세요');
+      }
+
+      // API 요청
+      final response = await http.get(
+        Uri.parse('$baseUrl/codeRegistration/recent/$userName'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+        return data.map((e) => Map<String, String>.from(e)).toList();
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("API 호출 오류: $e");
+      return null;
+    }
+  }
+
 }

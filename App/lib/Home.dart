@@ -371,8 +371,12 @@ class _CategoryViewState extends State<CategoryView> {
                       //print("370줄 categoryData: $categoryData");
                       _categoryFiles = categoryData;
                       _categories = categoryData.keys.toList();
-
                       //print("374줄 _categoryFiles: $_categoryFiles");
+
+                      // 카테고리가 하나도 없을 경우 빈 화면 반환
+                      if (_categories.isEmpty) {
+                        return SizedBox.shrink();
+                      }
 
                       return Column(
                         children: _categories.expand((category) => [
