@@ -1,19 +1,85 @@
-
 # LUMOS
 2025 캡스톤디자인
 
-## App
-A new Flutter project.
+> Status: **Archived**  
+> Reason: **주제 변경으로 개발 중단**  
+> Period: **2월 19일 시작 · 3월 18일 중단 결정**
 
-### Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 프로젝트 개요
+루모스는 강의실 칠판과 화이트보드 내용을 자동으로 기록하고 요약하는 시스템을 목표로 한 프로젝트입니다.  
+루빅보드 RB5 카메라로 판서를 촬영하고 OCR과 요약 모델을 거쳐 **텍스트 파일**, **요약본**, **PDF**를 생성해 서버와 앱에 연동하는 것을 기본 의도로 했으나, 주제 변경에 따라 개발을 중단했습니다. 이 저장소에는 초기 설계와 코드 일부가 포함됩니다.
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 만들고자 했던 것
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 핵심 목표
+강의실이나 회의실에서 판서를 자동 수집하고 요약하여 학생과 구성원이 즉시 열람하고 다운로드할 수 있도록 하는 서비스
+
+### 주요 기능
+- 오류 수정과 PDF 변환
+- 자동 요약 생성
+- 회의록과 보고서 등 정해진 템플릿으로 문서화
+- 캘린더 형태의 기록 열람
+- 영단어 보충 설명
+- 강의 코드 기반의 접근 제어와 그룹 공유
+
+### 시나리오
+- 교수자가 강의 시작 시 1회용 강의 코드를 생성
+- 학생은 앱에서 코드를 입력해 해당 강의 기록에 접근
+- 요약본과 PDF를 확인하거나 내려받기
+
+---
+
+## 시스템 아키텍처 구상
+
+### 루빅보드 RB5
+- 카메라로 판서 이미지 캡처
+- 전처리와 기하 보정
+- OCR과 필기 인식
+- 요약 모델 적용
+- 텍스트와 요약본과 PDF 생성
+- 생성물 업로드
+
+### 백엔드와 저장소
+- PDF와 원문 텍스트와 요약 텍스트 저장
+- 강의별 자료 조회 API 제공
+- 강의 코드와 접근 권한 관리
+
+### 앱과 웹
+- 앱은 강의 목록과 자료 열람과 검색과 다운로드 제공
+- 웹은 교수자와 관리자가 요약본 확인과 수정과 PDF 미리보기와 오류 정정과 수동 업데이트 수행
+
+---
+
+## 기술 스택 메모
+
+### 영상과 인식
+- OpenCV와 Mediapipe 손동작 감지
+- Tesseract와 TrOCR 기반 텍스트 인식
+- YOLO 계열 세그멘테이션으로 텍스트 블록과 그림 분리
+- 블록 좌표를 이용한 좌에서 우와 상에서 하 순서 정렬
+
+### 요약
+- 추출 요약 TextRank
+- 생성 요약 T5와 BART와 Pegasus 후보
+
+### 클라우드
+- 파일 저장소 S3 계열
+- REST 또는 GraphQL API
+
+---
+
+## 중단 및 주제 변경 사유
+
+- 온디바이스의 명확한 가치 정의 부족  
+  모바일 실시간 인식의 이점이 제한적
+- 데이터셋과 학습 파이프라인 비용  
+  텍스트 블록과 수식과 그림을 동시에 잘 분리하고 순서를 안정적으로 재구성하려면 상당한 데이터 수집과 라벨링과 모델 튜닝 필요
+- 프로젝트 일정과 범위 관리  
+  전체 파이프라인을 학기 내 완성하기 어려워 현실적인 범위로의 피벗 필요
+
+
+
