@@ -1,7 +1,6 @@
 # LUMOS
 2025 캡스톤디자인
-
-> Status: **Archived**  
+  
 > Reason: **주제 변경으로 개발 중단**  
 > Period: **2월 19일 시작 · 3월 18일 중단 결정**
 
